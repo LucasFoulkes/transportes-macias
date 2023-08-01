@@ -5,13 +5,21 @@ import Map from "./Map";
 
 const Form = () => {
   const [location, setLocation] = useState("");
+  const [target, setTarget] = useState("");
+  const [distance, setDistance] = useState(0);
 
   return (
     <form>
       <GoogleMapsProvider>
         <LocationInput setLocation={setLocation} />
-        <Map direction={location} />
+        <LocationInput setLocation={setTarget} />
+        <Map
+          startLocation={location}
+          target={target}
+          setDistance={setDistance}
+        />
       </GoogleMapsProvider>
+      {distance > 0 && <div>Distance: {distance} km</div>}
     </form>
   );
 };

@@ -1,39 +1,96 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useEffect, useRef, useState } from "react";
 import { useGoogleMaps } from "../../context/GoogleMapsContext";
 
-const Map = ({ direction }) => {
+const Map = ({ startLocation, target, setDistance }) => {
   const { isLoaded, loadError } = useGoogleMaps();
-  const [currentPosition, setCurrentPosition] = useState(null);
+  const mapRef = useRef(null);
+  const directionsServiceRef = useRef(null);
+  const directionsRendererRef = useRef(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setCurrentPosition({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
+    // Get the current location of the browser
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const latLng = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCurrentLocation(latLng);
       });
-    });
+    }
   }, []);
 
-  const mapContainerStyle = {
-    width: "100%",
-    height: "400px",
-  };
+  useEffect(() => {
+    if (isLoaded && window.google && window.google.maps) {
+      const mapOptions = {
+        center: currentLocation || startLocation || target,
+        zoom: 15,
+        streetViewControl: false,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        keyboardShortcuts: false,
+      };
 
-  const center = currentPosition || { lat: 0, lng: 0 }; // Default to (0, 0) if current position is not available
+      const map = new window.google.maps.Map(mapRef.current, mapOptions);
+
+      // Add marker for start location
+      if (startLocation) {
+        new window.google.maps.Marker({
+          position: startLocation,
+          map,
+        });
+        map.setCenter(startLocation);
+        map.setZoom(15);
+      }
+
+      // Add marker for target location and show path
+      if (startLocation && target) {
+        new window.google.maps.Marker({
+          position: target,
+          map,
+        });
+
+        directionsServiceRef.current =
+          new window.google.maps.DirectionsService();
+        directionsRendererRef.current =
+          new window.google.maps.DirectionsRenderer();
+        directionsRendererRef.current.setMap(map);
+
+        const request = {
+          origin: startLocation,
+          destination: target,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        };
+
+        directionsServiceRef.current.route(request, (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            directionsRendererRef.current.setDirections(result);
+            // Calculate the distance in kilometers
+            const distanceInMeters = result.routes[0].legs[0].distance.value;
+            const distanceInKm = distanceInMeters / 1000;
+            setDistance(distanceInKm);
+          }
+        });
+      }
+    }
+  }, [isLoaded, startLocation, target, currentLocation, setDistance]);
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading maps</div>;
+
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      zoom={15}
-      center={direction || center}
-      options={{ disableDefaultUI: true }}
-    >
-      {direction && <Marker position={direction} />}
-    </GoogleMap>
+    <div
+      ref={mapRef}
+      style={{
+        width: "100%",
+        height: "400px",
+      }}
+    />
   );
 };
 
