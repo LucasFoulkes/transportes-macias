@@ -1,24 +1,32 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
-import { useLoadScript } from "@react-google-maps/api";
+import { useGoogleMaps } from "../../context/GoogleMapsContext";
 
-const libraries = ["places"];
-
-const LocationInput = ({ location, setLocation }) => {
+const LocationInput = ({ setLocation }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [error, setError] = useState(null);
   const timeoutRef = useRef(null);
   const autocompleteServiceRef = useRef(null);
+  const geocoderRef = useRef(null);
+  const [userLocation, setUserLocation] = useState(null);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCGHcl2Nbor4m80KE3s8yWaLz8lgnE5dGk",
-    libraries,
-  });
+  const { isLoaded, loadError } = useGoogleMaps();
 
   useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const latLng = new window.google.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        setUserLocation(latLng);
+      });
+    }
+
     if (isLoaded && window.google && window.google.maps) {
       autocompleteServiceRef.current =
         new window.google.maps.places.AutocompleteService();
+      geocoderRef.current = new window.google.maps.Geocoder();
     }
   }, [isLoaded]);
 
@@ -27,8 +35,14 @@ const LocationInput = ({ location, setLocation }) => {
 
     timeoutRef.current = setTimeout(() => {
       if (autocompleteServiceRef.current && input) {
+        const request = {
+          input,
+          location: userLocation,
+          radius: 50000,
+        };
+
         autocompleteServiceRef.current.getPlacePredictions(
-          { input },
+          request,
           (predictions, status) => {
             if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
               setError("Invalid address");
@@ -42,12 +56,23 @@ const LocationInput = ({ location, setLocation }) => {
   };
 
   const handleLocationChange = (e) => {
-    setLocation(e.target.value);
     handleAutocomplete(e.target.value);
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setLocation(suggestion.description);
+    if (geocoderRef.current) {
+      geocoderRef.current.geocode(
+        { address: suggestion.description },
+        (results, status) => {
+          if (status === window.google.maps.GeocoderStatus.OK) {
+            const location = results[0].geometry.location;
+            setLocation({ lat: location.lat(), lng: location.lng() });
+          } else {
+            setError("Failed to get location coordinates");
+          }
+        }
+      );
+    }
     setSuggestions([]); // Clear suggestions
   };
 
@@ -56,7 +81,7 @@ const LocationInput = ({ location, setLocation }) => {
 
   return (
     <div>
-      <input type="text" value={location} onChange={handleLocationChange} />
+      <input type="text" onChange={handleLocationChange} />
       {suggestions.map((suggestion) => (
         <div
           key={suggestion.place_id}
@@ -65,7 +90,7 @@ const LocationInput = ({ location, setLocation }) => {
           {suggestion.description}
         </div>
       ))}
-      {error && <div>Invalid address</div>}
+      {error && <div>{error}</div>}
     </div>
   );
 };
