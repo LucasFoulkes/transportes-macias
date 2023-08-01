@@ -2,7 +2,6 @@ import { useState } from "react";
 import LocationInput from "./LocationInput";
 import { GoogleMapsProvider } from "../../context/GoogleMapsContext";
 import Map from "./Map";
-import CurrentLocationButton from "./CurrentLocationInput";
 
 const Form = () => {
   const [location, setLocation] = useState("");
@@ -13,7 +12,6 @@ const Form = () => {
     <form>
       <GoogleMapsProvider>
         <LocationInput setLocation={setLocation} />
-        <CurrentLocationButton setLocation={setLocation} />
         <LocationInput setLocation={setTarget} />
         <Map
           startLocation={location}
