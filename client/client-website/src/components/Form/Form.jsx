@@ -2,6 +2,7 @@ import { useState } from "react";
 import LocationInput from "./LocationInput";
 import { GoogleMapsProvider } from "../../context/GoogleMapsContext";
 import Map from "./Map";
+import CurrentLocationButton from "./CurrentLocationInput";
 
 const Form = () => {
   const [location, setLocation] = useState("");
@@ -12,6 +13,7 @@ const Form = () => {
     <form>
       <GoogleMapsProvider>
         <LocationInput setLocation={setLocation} />
+        <CurrentLocationButton setLocation={setLocation} />
         <LocationInput setLocation={setTarget} />
         <Map
           startLocation={location}
@@ -19,7 +21,7 @@ const Form = () => {
           setDistance={setDistance}
         />
       </GoogleMapsProvider>
-      {distance > 0 && <div>Distance: {distance} km</div>}
+      {distance > 0 && <h2>Distance: {distance} km</h2>}
     </form>
   );
 };
