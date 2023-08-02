@@ -28,7 +28,7 @@ const Map = ({ startLocation, target, setDistance }) => {
         center: currentLocation || startLocation || target,
         zoom: 15,
         streetViewControl: false,
-        zoomControl: true,
+        zoomControl: false,
         mapTypeControl: false,
         scaleControl: false,
         rotateControl: false,

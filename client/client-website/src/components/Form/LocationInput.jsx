@@ -4,26 +4,28 @@ import { useGoogleMaps } from "../../context/GoogleMapsContext";
 
 const LocationInput = ({ setLocation }) => {
   const [suggestions, setSuggestions] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const timeoutRef = useRef(null);
-  const autocompleteServiceRef = useRef(null);
-  const geocoderRef = useRef(null);
-  const [userLocation, setUserLocation] = useState(null);
-
   const { isLoaded, loadError } = useGoogleMaps();
 
+  const autocompleteServiceRef = useRef(null);
+  const geocoderRef = useRef(null);
+  const userLocationRef = useRef(null);
+
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (
+      navigator.geolocation &&
+      isLoaded &&
+      window.google &&
+      window.google.maps
+    ) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const latLng = new window.google.maps.LatLng(
+        userLocationRef.current = new window.google.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
         );
-        setUserLocation(latLng);
       });
-    }
-
-    if (isLoaded && window.google && window.google.maps) {
       autocompleteServiceRef.current =
         new window.google.maps.places.AutocompleteService();
       geocoderRef.current = new window.google.maps.Geocoder();
@@ -31,49 +33,44 @@ const LocationInput = ({ setLocation }) => {
   }, [isLoaded]);
 
   const handleAutocomplete = (input) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
+    clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       if (autocompleteServiceRef.current && input) {
-        const request = {
-          input,
-          location: userLocation,
-          radius: 50000,
-        };
-
         autocompleteServiceRef.current.getPlacePredictions(
-          request,
+          { input, location: userLocationRef.current, radius: 50000 },
           (predictions, status) => {
-            if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-              setError("Invalid address");
-              return;
-            }
-            setSuggestions(predictions);
+            status === window.google.maps.places.PlacesServiceStatus.OK
+              ? setSuggestions(predictions)
+              : setError("Invalid address");
           }
         );
       }
-    }, 1100);
-  };
-
-  const handleLocationChange = (e) => {
-    handleAutocomplete(e.target.value);
+    }, 1000);
   };
 
   const handleSuggestionClick = (suggestion) => {
-    if (geocoderRef.current) {
-      geocoderRef.current.geocode(
-        { address: suggestion.description },
-        (results, status) => {
-          if (status === window.google.maps.GeocoderStatus.OK) {
-            const location = results[0].geometry.location;
-            setLocation({ lat: location.lat(), lng: location.lng() });
-          } else {
-            setError("Failed to get location coordinates");
-          }
+    geocoderRef.current?.geocode(
+      { address: suggestion.description },
+      (results, status) => {
+        if (status === window.google.maps.GeocoderStatus.OK) {
+          const location = results[0].geometry.location;
+          setLocation({ lat: location.lat(), lng: location.lng() });
+          setInputValue(suggestion.description); // Set the input text
+        } else {
+          setError("Failed to get location coordinates");
         }
-      );
-    }
-    setSuggestions([]); // Clear suggestions
+      }
+    );
+    setSuggestions([]);
+  };
+
+  const handleCurrentLocationClick = () => {
+    setLocation({
+      lat: userLocationRef.current.lat(),
+      lng: userLocationRef.current.lng(),
+    });
+    setInputValue("mi ubicacion");
+    setSuggestions([]);
   };
 
   if (loadError) return <div>Error loading map</div>;
@@ -81,7 +78,15 @@ const LocationInput = ({ setLocation }) => {
 
   return (
     <div>
-      <input type="text" onChange={handleLocationChange} />
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          handleAutocomplete(e.target.value);
+        }}
+      />
+      <button onClick={handleCurrentLocationClick}>mi ubicacion</button>
       {suggestions.map((suggestion) => (
         <div
           key={suggestion.place_id}

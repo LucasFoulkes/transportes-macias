@@ -9,7 +9,7 @@ const Form = () => {
   const [distance, setDistance] = useState(0);
 
   return (
-    <form>
+    <>
       <GoogleMapsProvider>
         <LocationInput setLocation={setLocation} />
         <LocationInput setLocation={setTarget} />
@@ -19,8 +19,11 @@ const Form = () => {
           setDistance={setDistance}
         />
       </GoogleMapsProvider>
+      <button>camioneta</button>
+      <button>camioneta</button>
+      <button>camion grande</button>
       {distance > 0 && <h2>Distance: {distance} km</h2>}
-    </form>
+    </>
   );
 };
 
