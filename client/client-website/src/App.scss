@@ -1,89 +1,273 @@
-// Constants
-$primary-color: #333;
-$secondary-color: white;
-$font-family: 'Helvetica Neue', sans-serif;
-$nav-height: 60px;
-$nav-padding: 10px;
-$main-padding: 20px;
-$footer-padding: 10px;
-$breakpoint-mobile: 768px;
+$primary-color: black;
+$secondary-color: #f5f5f5;
+$tertiary-color: #4caf50;
+$accent-color: #f5a623;
+$font-family: 'Helvetica Neue',
+sans-serif;
 
-// Reset margin and padding
-html, body {
+// Mixin for transitions
+@mixin transition($properties...) {
+  transition: $properties 0.3s ease-in-out;
+}
+
+// Global styles
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
-  height: 100%;
+  box-sizing: border-box;
 }
 
-// Hide scrollbar for all browsers
-body::-webkit-scrollbar {
-  display: none; // for Chrome, Safari, and Opera
-}
 body {
-  -ms-overflow-style: none; // for IE and Edge
-  scrollbar-width: none; // for Firefox
   font-family: $font-family;
-  background-color: #f4f4f4;
-  width: 100%;
+  line-height: 1.6;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
 }
 
-header {
-  background-color: $primary-color;
-  color: $secondary-color;
-  height: $nav-height;
+// Hide scrollbar globally
+::-webkit-scrollbar {
+  display: none;
 }
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  justify-content: space-around;
-  padding: $nav-padding;
-  margin: 0;
-  width: 100%;
-}
+a {
+  text-decoration: none;
 
-nav li {
-  cursor: pointer;
-  color: $secondary-color;
-  font-weight: bold;
+  &:hover {
+    text-decoration: underline;
+    @include transition(color);
+  }
 }
 
 main {
-  padding: $main-padding;
-  margin: 0;
   flex-grow: 1;
 }
 
-h1 {
-  color: $primary-color;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+// Header styles
+header {
+  background: $secondary-color url('./assets/hero.png') center/cover;
+  height: 90vh;
+  overflow-y: auto;
+
+  nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    ul {
+      display: flex;
+      justify-content: space-around;
+      width: 50%;
+      padding: .5rem 0;
+      margin: 0;
+      list-style: none;
+      border-bottom: 1px solid $secondary-color;
+
+      li {
+        color: $secondary-color;
+        font-size: 1.5rem;
+        cursor: pointer;
+        text-transform: capitalize;
+
+        &:hover {
+          color: $accent-color;
+          @include transition(color);
+        }
+      }
+    }
+  }
+
+  #hero {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: left;
+    height: 80%;
+
+    h1 {
+      font-size: 13rem;
+      word-break: break-all;
+      width: 13ch;
+      padding-left: 4rem;
+      line-height: 1.2;
+      color: rgba($secondary-color, .9);
+    }
+
+    span {
+      margin-top: 5rem;
+      font-size: 2rem;
+      padding: .5rem 2rem .5rem 4rem;
+      text-transform: capitalize;
+      background-color: $tertiary-color;
+      border-radius: 0 10ch 10ch 0;
+      width: fit-content;
+      cursor: pointer;
+      color: $primary-color;
+      @include transition(transform, background-color, color);
+
+      &:hover {
+        background-color: $accent-color;
+        color: $secondary-color;
+        transform: scale(1.1);
+      }
+    }
+  }
 }
 
-// Footer Styles
+#contacto {
+  background-color: $primary-color;
+  color: $secondary-color;
+  padding: 8rem 5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6rem;
+
+  h1 {
+    font-size: 3.5rem;
+    line-height: 2.5ch;
+  }
+
+  li {
+    padding-left: 1rem;
+    list-style: none;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $secondary-color;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+    &:hover {
+      transform: translateX(3rem);
+      background-color: $accent-color;
+      color: $primary-color;
+      border-bottom: 1px solid $primary-color;
+    }
+  }
+
+  a {
+    color: inherit;
+    font-size: 2rem;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+#servicios {
+  height: 60%;
+  background-color: $accent-color;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  color: $primary-color;
+
+  ul {
+    padding: 5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    line-height: 2.5ch;
+    text-transform: capitalize;
+  }
+
+  li {
+    padding: 1rem;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
 footer {
   background-color: $primary-color;
   color: $secondary-color;
   text-align: center;
-  padding: $footer-padding;
-  margin: 0;
+  padding: 10px;
 }
 
-// Mobile Responsive Styles
-@media screen and (max-width: $breakpoint-mobile) {
-  nav ul {
-    flex-direction: column;
-    align-items: center;
+
+@media screen and (max-width: 768px) {
+  header {
+    height: 60vh;
+    object-fit: cover;
+
+    nav {
+      ul {
+        width: 100%;
+        flex-direction: row;
+        background: linear-gradient(to bottom, rgba($primary-color, .5), transparent);
+        border: none;
+        align-items: center;
+
+        li {
+          font-size: 1.2rem;
+          padding: 0.5rem 0;
+        }
+      }
+    }
+
+    #hero {
+      h1 {
+        font-size: 3.5rem;
+        width: 100%;
+        padding: .1rem;
+      }
+
+      span {
+        font-size: 1.5rem;
+        padding: 0.5rem 1rem 0.5rem 2rem;
+        margin-top: 2rem;
+      }
+    }
   }
 
-  main {
-    padding: $main-padding;
+  #contacto {
+    padding: 4rem 2rem;
+    grid-template-columns: 1fr;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    li {
+      font-size: 1.5rem;
+    }
+
   }
 
-  h1 {
-    font-size: 1.5rem;
+  #servicios {
+    grid-template-columns: 1fr;
+
+    ul {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    li {
+      font-size: 1.2rem;
+    }
+  }
+
+  footer {
+    padding: 5px;
   }
 }
