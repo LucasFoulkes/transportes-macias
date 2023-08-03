@@ -2,63 +2,87 @@ import { useState } from "react";
 import LocationInput from "./LocationInput";
 import { GoogleMapsProvider } from "../../context/GoogleMapsContext";
 import Map from "./Map";
+import camionetaImage from "../../assets/camioneta.svg";
+import camionImage from "../../assets/camion.svg";
+import camionGrandeImage from "../../assets/camion-grande.svg";
 
 const Form = () => {
   const [location, setLocation] = useState("");
   const [target, setTarget] = useState("");
   const [distance, setDistance] = useState(0);
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [cashValue, setCashValue] = useState(null);
+
+  const calculateCashValue = (distance, vehicleType) => {
+    let rate;
+    switch (vehicleType) {
+      case "Camioneta":
+        rate = 1.5; // Example rate for Camioneta
+        break;
+      case "Camion":
+        rate = 2.0; // Example rate for Camion
+        break;
+      case "Camion Grande":
+        rate = 2.5; // Example rate for Camion Grande
+        break;
+      default:
+        rate = 0;
+    }
+    return distance * rate;
+  };
+
+  const handleVehicleClick = (type) => {
+    const value = calculateCashValue(distance, type);
+    setCashValue(value);
+  };
 
   return (
-    <form className="form-container">
-      <section>
+    <>
+      <section id="calculadora">
+        <h1>calculadora</h1>
         <fieldset>
-          <GoogleMapsProvider>
-            <legend>Calculadora</legend>
-            <label htmlFor="pickup">Ubicación de Recojida:</label>
-            <LocationInput id="pickup" setLocation={setLocation} />
-            <label htmlFor="delivery">Ubicación de Entrega:</label>
-            <LocationInput id="delivery" setLocation={setTarget} />
-            <Map
-              startLocation={location}
-              target={target}
-              setDistance={setDistance}
-            />
-          </GoogleMapsProvider>
-          <div className="vehicle-selection">
-            <button type="button">Camioneta</button>
-            <button type="button">Camioneta</button>
-            <button type="button">Camión Grande</button>
-          </div>
-          {distance > 0 && <h2>Distance: {distance} km</h2>}
-          <button type="button">Calcular</button>
+          {distance === 0 && (
+            <GoogleMapsProvider>
+              <LocationInput setLocation={setLocation} />
+              <LocationInput setLocation={setTarget} />
+              <Map
+                startLocation={location}
+                target={target}
+                setDistance={setDistance}
+              />
+            </GoogleMapsProvider>
+          )}
+          {distance > 0 && cashValue === null && (
+            <div className="vehicle-buttons-container">
+              <div className="vehicle-buttons">
+                <div className="vehicle-button">
+                  <button onClick={() => handleVehicleClick("Camioneta")}>
+                    <img src={camionetaImage} alt="Camioneta" />
+                  </button>
+                  <span>Camioneta</span>
+                </div>
+                <div className="vehicle-button">
+                  <button onClick={() => handleVehicleClick("Camion")}>
+                    <img src={camionImage} alt="Camion" />
+                  </button>
+                  <span>Camion</span>
+                </div>
+                <div className="vehicle-button">
+                  <button onClick={() => handleVehicleClick("Camion Grande")}>
+                    <img src={camionGrandeImage} alt="Camion Grande" />
+                  </button>
+                  <span>Camion Grande</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {cashValue !== null && (
+            <div>
+              <p>Total Cost: ${cashValue.toFixed(2)}</p>
+            </div>
+          )}
         </fieldset>
       </section>
-      <fieldset className="personal-info">
-        <legend>Información Personal</legend>
-        <label htmlFor="name">Nombre:</label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <label htmlFor="phone">Número de Teléfono:</label>
-        <input
-          type="tel"
-          id="phone"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-        <input type="number" id="cedula" />
-        <label htmlFor="terms">
-          <input type="checkbox" id="terms" />
-          Acepto los <a href="#">términos y condiciones</a>
-        </label>
-      </fieldset>
-      <button type="submit">Confirmar</button>
-    </form>
+    </>
   );
 };
 

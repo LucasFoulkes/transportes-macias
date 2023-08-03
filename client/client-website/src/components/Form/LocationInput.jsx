@@ -78,25 +78,29 @@ const LocationInput = ({ setLocation }) => {
   if (!isLoaded) return <div>Loading map</div>;
 
   return (
-    <div>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
-          handleAutocomplete(e.target.value);
-        }}
-      />
-      <button onClick={handleCurrentLocationClick}>mi ubicacion</button>
-      {suggestions.map((suggestion) => (
-        <div
-          key={suggestion.place_id}
-          onClick={() => handleSuggestionClick(suggestion)}
-        >
-          {suggestion.description}
-        </div>
-      ))}
-      {error && <div>{error}</div>}
+    <div id="location-input-container">
+      <div className="input-container">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            handleAutocomplete(e.target.value);
+          }}
+        />
+        <button onClick={handleCurrentLocationClick}>mi ubicacion</button>
+      </div>
+      <div className="suggestions">
+        {suggestions.map((suggestion) => (
+          <div
+            key={suggestion.place_id}
+            onClick={() => handleSuggestionClick(suggestion)}
+          >
+            {suggestion.description}
+          </div>
+        ))}
+      </div>
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };
