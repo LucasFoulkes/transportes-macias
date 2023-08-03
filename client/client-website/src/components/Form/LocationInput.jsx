@@ -64,7 +64,8 @@ const LocationInput = ({ setLocation }) => {
     setSuggestions([]);
   };
 
-  const handleCurrentLocationClick = () => {
+  const handleCurrentLocationClick = (event) => {
+    event.preventDefault();
     setLocation({
       lat: userLocationRef.current.lat(),
       lng: userLocationRef.current.lng(),
