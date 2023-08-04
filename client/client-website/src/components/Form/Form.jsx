@@ -1,31 +1,33 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import LocationInput from "./LocationInput";
 import { GoogleMapsProvider } from "../../context/GoogleMapsContext";
 import Map from "./Map";
-import camionetaImage from "../../assets/camioneta.svg";
-import camionImage from "../../assets/camion.svg";
-import camionGrandeImage from "../../assets/camion-grande.svg";
-import UserInfoForm from "./UserInfoForm"; // Import the UserInfoForm component
+import camionetaImage from "../../assets/truck_1.png";
+import camionImage from "../../assets/truck_2.png";
+import camionGrandeImage from "../../assets/truck_3.png";
+import camionImage4 from "../../assets/truck_4.png";
+import camionImage5 from "../../assets/truck_5.png";
+import camionImage6 from "../../assets/truck_6.png";
+import camionImage7 from "../../assets/truck_7.png";
 
 const Form = () => {
   const [location, setLocation] = useState("");
   const [target, setTarget] = useState("");
   const [distance, setDistance] = useState(0);
-  const [vehicleType, setVehicleType] = useState(null); // Store the selected vehicle type
+  const [vehicleType, setVehicleType] = useState(null);
   const [cashValue, setCashValue] = useState(null);
-  const [showReservationForm, setShowReservationForm] = useState(false); // State to control the display of the reservation form
 
   const calculateCashValue = (distance, vehicleType) => {
     let rate;
     switch (vehicleType) {
       case "Camioneta":
-        rate = 1.5; // Example rate for Camioneta
+        rate = 1.5;
         break;
       case "Camion":
-        rate = 2.0; // Example rate for Camion
+        rate = 2.0;
         break;
       case "Camion Grande":
-        rate = 2.5; // Example rate for Camion Grande
+        rate = 2.5;
         break;
       default:
         rate = 0;
@@ -34,7 +36,7 @@ const Form = () => {
   };
 
   const handleVehicleClick = (type) => {
-    setVehicleType(type); // Store the selected vehicle type
+    setVehicleType(type);
   };
 
   const handleCalculateClick = () => {
@@ -42,24 +44,56 @@ const Form = () => {
     setCashValue(value);
   };
 
-  const handleReserveClick = () => {
-    setShowReservationForm(true);
-  };
-
   return (
-    <>
-      <section id="calculadora">
-        <h2>calculadora</h2>
-        <div className="calculadora">
-          {distance === 0 && (
-            <GoogleMapsProvider>
-              <LocationInput setLocation={setLocation} />
-              <LocationInput setLocation={setTarget} />
-            </GoogleMapsProvider>
-          )}
+    <section id="calculadora">
+      <div className="calculadora">
+        <GoogleMapsProvider>
+          <LocationInput
+            setLocation={setLocation}
+            label={"ubicacion inicial"}
+          />
+          <LocationInput setLocation={setTarget} label={"destino"} />
+          <Map
+            startLocation={location}
+            target={target} // Changed from targetLocation to target
+            setDistance={setDistance}
+          />
+        </GoogleMapsProvider>
+        <div className="vehiculos">
+          <button onClick={() => handleVehicleClick("Camioneta")}>
+            <img src={camionetaImage} alt="Camioneta" />
+          </button>
+          <button onClick={() => handleVehicleClick("Camion")}>
+            <img src={camionImage} alt="Camion" />
+          </button>
+          <button onClick={() => handleVehicleClick("Camion Grande")}>
+            <img src={camionGrandeImage} alt="Camion Grande" />
+          </button>
+          {/* Additional buttons for new images */}
+          <button onClick={() => handleVehicleClick("Camion 4")}>
+            <img src={camionImage4} alt="Camion 4" />
+          </button>
+          <button onClick={() => handleVehicleClick("Camion 5")}>
+            <img src={camionImage5} alt="Camion 5" />
+          </button>
+          <button onClick={() => handleVehicleClick("Camion 6")}>
+            <img src={camionImage6} alt="Camion 6" />
+          </button>
+          <button onClick={() => handleVehicleClick("Camion 7")}>
+            <img src={camionImage7} alt="Camion 7" />
+          </button>
         </div>
-      </section>
-    </>
+        <button
+          id="calcular"
+          onClick={() => {
+            handleCalculateClick();
+          }}
+        >
+          calcular
+        </button>
+        <span>{cashValue !== null && `S/. ${cashValue.toFixed(2)}`}</span>
+      </div>
+    </section>
   );
 };
 

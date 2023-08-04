@@ -5,12 +5,10 @@ $accent-color: #f5a623;
 $font-family: 'Helvetica Neue',
 sans-serif;
 
-// Mixin for transitions
 @mixin transition($properties...) {
   transition: $properties 0.3s ease-in-out;
 }
 
-// Global styles
 *,
 *::before,
 *::after {
@@ -24,6 +22,13 @@ body,
 a {
   font-family: $font-family;
   line-height: 1.6;
+  overflow-y: scroll; // Enables scrolling
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari
+  }
 }
 
 body {
@@ -153,40 +158,120 @@ header {
     padding: 3rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    gap: 2rem;
+
+    #location-input-container,
+    img,
+    button,
+    #map {
+      border: 2px solid $primary-color;
+      border-radius: 1rem;
+    }
 
     #location-input-container {
-      grid-template-columns: 1fr 1fr;
+      display: grid;
       align-items: start;
+      width: 100%;
+      background-color: $secondary-color;
+      padding: .5rem 1rem;
 
       input {
-        padding: 1rem;
-        border: 1px solid $primary-color;
-        border-radius: 1rem;
         width: 100%;
-      }
+        padding: .5;
+        border: none;
+        font-size: 1.25rem;
+        font-weight: bold;
 
-      button {
-        border-radius: 1rem;
-        width: fit-content;
-        background-color: $primary-color; // Fixed syntax error here
-        color: $accent-color;
-        cursor: pointer;
-        padding: 1rem; // Added padding for better appearance
-        border: none; // Removed default border
-        @include transition(transform, background-color, color);
-
-        &:hover {
-          background-color: $accent-color;
-          color: $primary-color;
-          transform: scale(1.1);
+        &:focus {
+          outline: none;
         }
       }
 
-      .suggestions {
+      .suggestion {
+        border-bottom: $primary-color solid 1px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: .5rem 0;
         cursor: pointer;
+
+        &:hover {
+          font-weight: bolder;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
       }
     }
+
+    .vehiculos {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1rem;
+      grid-column: 1 / -1;
+
+      button {
+        background-color: $secondary-color;
+        color: $primary-color;
+        padding: 1rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        &:focus {
+          outline: none;
+          transform: scale(1.1);
+          outline: 3px solid $primary-color;
+        }
+
+        &:active {
+          transform: scale(1.1);
+          outline: 3px solid $primary-color;
+        }
+
+      }
+
+      img {
+        border: none;
+        background-color: $secondary-color;
+        width: 100%;
+        border-radius: 0rem;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+
+    #calcular {
+      text-transform: capitalize;
+      background-color: $primary-color;
+      color: $accent-color;
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+      grid-column: 1 / -1;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  #map {
+    grid-column: 1/-1;
   }
 }
 

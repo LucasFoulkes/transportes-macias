@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useGoogleMaps } from "../../context/GoogleMapsContext";
 
-const LocationInput = ({ setLocation }) => {
+const LocationInput = ({ setLocation, label }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
@@ -45,7 +45,7 @@ const LocationInput = ({ setLocation }) => {
           }
         );
       }
-    }, 1000);
+    }, 500);
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -64,43 +64,36 @@ const LocationInput = ({ setLocation }) => {
     setSuggestions([]);
   };
 
-  const handleCurrentLocationClick = (event) => {
-    event.preventDefault();
-    setLocation({
-      lat: userLocationRef.current.lat(),
-      lng: userLocationRef.current.lng(),
-    });
-    setInputValue("mi ubicacion");
-    setSuggestions([]);
-  };
-
   if (loadError) return <div>Error loading map</div>;
   if (!isLoaded) return <div>Loading map</div>;
 
   return (
     <div id="location-input-container">
       <input
+        id="location-input"
         type="text"
+        placeholder={label}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
           handleAutocomplete(e.target.value);
         }}
       />
-      {/* <button onClick={handleCurrentLocationClick}>mi ubicacion</button> */}
-      <div className="suggestions">
-        {suggestions.map((suggestion) => (
-          <div
-            key={suggestion.place_id}
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            {suggestion.description}
-          </div>
-        ))}
-      </div>
+      {suggestions.length > 0 && (
+        <>
+          {suggestions.map((suggestion) => (
+            <div
+              className="suggestion"
+              key={suggestion.place_id}
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {suggestion.description}
+            </div>
+          ))}
+        </>
+      )}
       {error && <div className="error">{error}</div>}
     </div>
   );
 };
-
 export default LocationInput;
