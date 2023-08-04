@@ -5,12 +5,15 @@ import Map from "./Map";
 import camionetaImage from "../../assets/camioneta.svg";
 import camionImage from "../../assets/camion.svg";
 import camionGrandeImage from "../../assets/camion-grande.svg";
+import UserInfoForm from "./UserInfoForm"; // Import the UserInfoForm component
 
 const Form = () => {
   const [location, setLocation] = useState("");
   const [target, setTarget] = useState("");
   const [distance, setDistance] = useState(0);
+  const [vehicleType, setVehicleType] = useState(null); // Store the selected vehicle type
   const [cashValue, setCashValue] = useState(null);
+  const [showReservationForm, setShowReservationForm] = useState(false); // State to control the display of the reservation form
 
   const calculateCashValue = (distance, vehicleType) => {
     let rate;
@@ -31,56 +34,30 @@ const Form = () => {
   };
 
   const handleVehicleClick = (type) => {
-    const value = calculateCashValue(distance, type);
+    setVehicleType(type); // Store the selected vehicle type
+  };
+
+  const handleCalculateClick = () => {
+    const value = calculateCashValue(distance, vehicleType);
     setCashValue(value);
+  };
+
+  const handleReserveClick = () => {
+    setShowReservationForm(true);
   };
 
   return (
     <>
       <section id="calculadora">
-        <h1>calculadora</h1>
-        <fieldset>
+        <h2>calculadora</h2>
+        <div className="calculadora">
           {distance === 0 && (
             <GoogleMapsProvider>
               <LocationInput setLocation={setLocation} />
               <LocationInput setLocation={setTarget} />
-              <Map
-                startLocation={location}
-                target={target}
-                setDistance={setDistance}
-              />
             </GoogleMapsProvider>
           )}
-          {distance > 0 && cashValue === null && (
-            <div className="vehicle-buttons-container">
-              <div className="vehicle-buttons">
-                <div className="vehicle-button">
-                  <button onClick={() => handleVehicleClick("Camioneta")}>
-                    <img src={camionetaImage} alt="Camioneta" />
-                  </button>
-                  <span>Camioneta</span>
-                </div>
-                <div className="vehicle-button">
-                  <button onClick={() => handleVehicleClick("Camion")}>
-                    <img src={camionImage} alt="Camion" />
-                  </button>
-                  <span>Camion</span>
-                </div>
-                <div className="vehicle-button">
-                  <button onClick={() => handleVehicleClick("Camion Grande")}>
-                    <img src={camionGrandeImage} alt="Camion Grande" />
-                  </button>
-                  <span>Camion Grande</span>
-                </div>
-              </div>
-            </div>
-          )}
-          {cashValue !== null && (
-            <div>
-              <p>Total Cost: ${cashValue.toFixed(2)}</p>
-            </div>
-          )}
-        </fieldset>
+        </div>
       </section>
     </>
   );

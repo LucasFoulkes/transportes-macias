@@ -79,17 +79,15 @@ const LocationInput = ({ setLocation }) => {
 
   return (
     <div id="location-input-container">
-      <div className="input-container">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-            handleAutocomplete(e.target.value);
-          }}
-        />
-        <button onClick={handleCurrentLocationClick}>mi ubicacion</button>
-      </div>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          handleAutocomplete(e.target.value);
+        }}
+      />
+      {/* <button onClick={handleCurrentLocationClick}>mi ubicacion</button> */}
       <div className="suggestions">
         {suggestions.map((suggestion) => (
           <div

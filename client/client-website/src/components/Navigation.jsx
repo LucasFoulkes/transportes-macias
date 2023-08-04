@@ -7,7 +7,6 @@ export default function Navigation() {
       <ul>
         <li onClick={() => scrollToSection("servicios")}>servicios</li>
         <li onClick={() => scrollToSection("contacto")}>contacto</li>
-        <li onClick={() => scrollToSection("carreras")}>carreras</li>
       </ul>
     </nav>
   );

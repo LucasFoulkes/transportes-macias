@@ -17,65 +17,53 @@ sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: default;
+}
+
+body,
+a {
+  font-family: $font-family;
+  line-height: 1.6;
 }
 
 body {
-  font-family: $font-family;
-  line-height: 1.6;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   -ms-overflow-style: none; // IE and Edge
   scrollbar-width: none; // Firefox
-}
 
-// Hide scrollbar globally
-::-webkit-scrollbar {
-  display: none;
-}
-
-a {
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-    @include transition(color);
+  ::-webkit-scrollbar {
+    display: none;
   }
 }
 
-main {
-  flex-grow: 1;
-}
-
-// Header styles
 header {
-  background: $secondary-color url('./assets/hero.png') center/cover;
-  height: 90vh;
-  overflow-y: auto;
+  background: url('./assets/hero.png') center/cover;
+  height: 100vh;
 
   nav {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
 
     ul {
       display: flex;
       justify-content: space-around;
-      width: 50%;
       padding: .5rem 0;
-      margin: 0;
       list-style: none;
       border-bottom: 1px solid $secondary-color;
 
       li {
         color: $secondary-color;
-        font-size: 1.5rem;
+        padding: 0 3rem;
+        font-size: 1rem;
         cursor: pointer;
         text-transform: capitalize;
 
         &:hover {
           color: $accent-color;
-          @include transition(color);
+          @include transition(color, transform);
+          transform: scale(1.2);
+          font-weight: bold;
         }
       }
     }
@@ -84,24 +72,22 @@ header {
   #hero {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
     flex-direction: column;
     text-align: left;
-    height: 80%;
+    height: 80vh;
 
     h1 {
       font-size: 13rem;
+      cursor: pointer;
       word-break: break-all;
-      width: 13ch;
-      padding-left: 4rem;
-      line-height: 1.2;
-      color: rgba($secondary-color, .9);
+      padding-left: 1rem;
+      color: rgba($secondary-color, .8);
     }
 
     span {
       margin-top: 5rem;
-      font-size: 2rem;
-      padding: .5rem 2rem .5rem 4rem;
+      font-size: 1.5rem;
+      padding: .5rem 2rem;
       text-transform: capitalize;
       background-color: $tertiary-color;
       border-radius: 0 10ch 10ch 0;
@@ -122,21 +108,15 @@ header {
 #contacto {
   background-color: $primary-color;
   color: $secondary-color;
-  padding: 8rem 5rem;
+  padding: 8rem 6rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 6rem;
 
-  h1 {
-    font-size: 3.5rem;
-    line-height: 2.5ch;
-  }
-
   li {
-    padding-left: 1rem;
+    padding: 0 0 .25rem 1.5rem;
     list-style: none;
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     border-bottom: 1px solid $secondary-color;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
 
@@ -150,124 +130,70 @@ header {
 
   a {
     color: inherit;
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+}
 
-    &:hover {
-      text-decoration: none;
+#calculadora {
+  background-color: $accent-color;
+  padding: 8rem 0;
+  color: $primary-color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    text-transform: capitalize;
+  }
+
+  .calculadora {
+    width: 60vw;
+    border: 2px solid $primary-color;
+    border-radius: 1rem;
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+
+    #location-input-container {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+
+      input {
+        padding: 1rem;
+        border: 1px solid $primary-color;
+        border-radius: 1rem;
+        width: 100%;
+      }
+
+      button {
+        border-radius: 1rem;
+        width: fit-content;
+        background-color: $primary-color; // Fixed syntax error here
+        color: $accent-color;
+        cursor: pointer;
+        padding: 1rem; // Added padding for better appearance
+        border: none; // Removed default border
+        @include transition(transform, background-color, color);
+
+        &:hover {
+          background-color: $accent-color;
+          color: $primary-color;
+          transform: scale(1.1);
+        }
+      }
+
+      .suggestions {
+        cursor: pointer;
+      }
     }
   }
 }
 
-#servicios {
-  height: 60%;
-  background-color: $accent-color;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  color: $primary-color;
-
-  ul {
-    padding: 5rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    list-style: none;
-    margin: 0;
-  }
-
-  h1 {
-    font-size: 3.5rem;
-    line-height: 2.5ch;
-    text-transform: capitalize;
-  }
-
-  li {
-    padding: 1rem;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
 
 footer {
   background-color: $primary-color;
   color: $secondary-color;
   text-align: center;
-  padding: 10px;
-}
-
-
-@media screen and (max-width: 768px) {
-  header {
-    height: 60vh;
-    object-fit: cover;
-
-    nav {
-      ul {
-        width: 100%;
-        flex-direction: row;
-        background: linear-gradient(to bottom, rgba($primary-color, .5), transparent);
-        border: none;
-        align-items: center;
-
-        li {
-          font-size: 1.2rem;
-          padding: 0.5rem 0;
-        }
-      }
-    }
-
-    #hero {
-      h1 {
-        font-size: 3.5rem;
-        width: 100%;
-        padding: .1rem;
-      }
-
-      span {
-        font-size: 1.5rem;
-        padding: 0.5rem 1rem 0.5rem 2rem;
-        margin-top: 2rem;
-      }
-    }
-  }
-
-  #contacto {
-    padding: 4rem 2rem;
-    grid-template-columns: 1fr;
-
-    h1 {
-      font-size: 2rem;
-    }
-
-    li {
-      font-size: 1.5rem;
-    }
-
-  }
-
-  #servicios {
-    grid-template-columns: 1fr;
-
-    ul {
-      padding: 2rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    li {
-      font-size: 1.2rem;
-    }
-  }
-
-  footer {
-    padding: 5px;
-  }
+  padding: 4rem;
 }
