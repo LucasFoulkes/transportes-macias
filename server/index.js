@@ -36,7 +36,8 @@ if (process.env.NODE_ENV !== "production") {
 app.use(morgan("combined"));
 
 // Path to the React build folder
-const distPath = path.join(__dirname, "../client/client-website/dist");
+// const distPath = path.join(__dirname, "../client/client-website/dist");
+const distPath = path.join(__dirname, "../test/map/dist");
 
 // Serve static files from the React build folder
 app.use(express.static(distPath));
