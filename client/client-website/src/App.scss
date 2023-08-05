@@ -84,7 +84,7 @@ header {
     h1 {
       font-size: 13rem;
       cursor: pointer;
-      word-break: break-all;
+      word-break: break-word;
       padding-left: 1rem;
       color: rgba($secondary-color, .8);
     }
@@ -273,6 +273,107 @@ header {
   #map {
     grid-column: 1/-1;
   }
+
+  #reservar {
+    grid-column: 1/-1;
+    background-color: $tertiary-color;
+    font-weight: bold;
+    text-transform: capitalize;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+  }
+
+  #recalcular {
+    grid-column: 1/-1;
+    background-color: $accent-color;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin: 0 auto;
+    font-size: 1rem;
+  }
+
+
+  #userForm {
+    grid-column: 1/-1;
+    gap: 2rem;
+    font-size: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 2rem;
+    border-radius: 10px;
+
+    .error {
+      color: red;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+
+    div {
+
+      display: grid;
+
+      label {
+        font-family: $font-family;
+        color: $primary-color;
+        font-weight: bold;
+        margin-right: 0.5rem;
+      }
+
+      input {
+        border: 1px solid $primary-color;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
+        font-family: $font-family;
+        color: $primary-color;
+        width: 100%;
+        outline: none;
+        @include transition(border);
+
+        &:focus {
+          border-color: $accent-color;
+        }
+
+        &:invalid,
+        &.error-border {
+          border-color: red;
+        }
+      }
+
+      input[type="tel"] {
+        @include transition(border);
+      }
+    }
+
+    button {
+      grid-column: 1/-1;
+      background-color: $tertiary-color;
+      color: $secondary-color;
+      border: none;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      font-family: $font-family;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 1rem;
+      margin: 1rem auto 0 0;
+      @include transition(background-color, color);
+
+      &:hover {
+        background-color: $accent-color;
+        color: $primary-color;
+      }
+
+      &:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+      }
+    }
+  }
 }
 
 
@@ -281,4 +382,64 @@ footer {
   color: $secondary-color;
   text-align: center;
   padding: 4rem;
+}
+
+// Mobile-Friendly Styles
+@media only screen and (max-width: 480px) {
+  header {
+    height: 80vh;
+
+    nav ul li {
+      padding: 0 1rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  #hero {
+    h1 {
+      font-size: 3.5rem !important;
+    }
+
+    span {
+      font-size: 1rem;
+    }
+  }
+
+  #contacto {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 4rem 2rem;
+  }
+
+  #calculadora {
+    padding: 4rem .5rem;
+
+    input {
+      background-color: white;
+    }
+
+    .calculadora {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      width: 90vw;
+      padding: 1rem;
+
+      .vehiculos {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #calcular {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  #userForm {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  footer {
+    padding: 2rem;
+  }
 }
