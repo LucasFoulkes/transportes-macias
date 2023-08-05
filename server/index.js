@@ -5,11 +5,13 @@ const http = require("http");
 const fs = require("fs");
 const morgan = require("morgan");
 const winston = require("winston");
+const cors = require("cors"); // Require the cors middleware
 
 const app = express();
 const httpsPort = 443; // Standard HTTPS port
 const httpPort = 80; // Standard HTTP port
 
+app.use(cors()); // Use cors middleware
 // Create a logger
 const logger = winston.createLogger({
   level: "info",
