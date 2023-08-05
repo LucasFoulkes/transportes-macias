@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import "./App.scss";
 import Form from "./components/Form/Form";
 import Navigation from "./components/Navigation";
@@ -46,6 +47,22 @@ const ContactSection = () => (
 );
 
 export default function App() {
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log(`Latitude: ${position.coords.latitude}`);
+          console.log(`Longitude: ${position.coords.longitude}`);
+        },
+        (error) => {
+          console.error(`Error Code = ${error.code} - ${error.message}`);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by your browser");
+    }
+  }, []);
+
   return (
     <>
       <header>

@@ -18,6 +18,11 @@ sans-serif;
   cursor: default;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body,
 a {
   font-family: $font-family;
