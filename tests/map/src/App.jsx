@@ -1,10 +1,13 @@
+import './App.css'
+import Map from './components/Map'
+
 function App() {
   return (
     <main>
-      <h1>Your App</h1>
-      <p>hello world</p>
+      <h1>pwa</h1>
+      <Map />
     </main>
-  );
+  )
 }
 
-export default App;
+export default App

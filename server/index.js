@@ -5,14 +5,15 @@ const http = require("http");
 const fs = require("fs");
 const morgan = require("morgan");
 const winston = require("winston");
-const cors = require("cors"); // Require the cors middleware
+const cors = require("cors");
+const { restart } = require("nodemon");
 
 const app = express();
-const httpsPort = 443; // Standard HTTPS port
-const httpPort = 80; // Standard HTTP port
+const httpsPort = 443;
+const httpPort = 80;
 
-app.use(cors()); // Use cors middleware
-// Create a logger
+app.use(cors());
+
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
@@ -23,7 +24,6 @@ const logger = winston.createLogger({
   ],
 });
 
-// If we're not in production then log to the `console`
 if (process.env.NODE_ENV !== "production") {
   logger.add(
     new winston.transports.Console({
@@ -32,22 +32,24 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-// Use morgan for HTTP request logging
 app.use(morgan("combined"));
 
-// Path to the React build folder
-// const distPath = path.join(__dirname, "../client/client-website/dist");
-const distPath = path.join(__dirname, "../test/map/dist");
 
-// Serve static files from the React build folder
-app.use(express.static(distPath));
 
-// Handle any requests that don't match the ones above
+const distPath = path.join(__dirname, "../tests/map/dist");
+
+app.use(express.static(distPath, {
+  setHeaders: (res) => {
+    res.set('Cache-Control', 'no-store');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+}));
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
-// SSL certificate options
 let options = {};
 
 try {
@@ -59,16 +61,13 @@ try {
   logger.error("Failed to load SSL certificates", err);
 }
 
-// Create an HTTPS service with the express app
 if (options.key && options.cert) {
   const server = https.createServer(options, app);
 
-  // Start the HTTPS server
   server.listen(httpsPort, "0.0.0.0", () => {
     logger.info(`Server is running on https://localhost:${httpsPort}`);
   });
 
-  // Create an HTTP server that redirects all traffic to HTTPS
   http
     .createServer((req, res) => {
       res.writeHead(301, {
@@ -83,13 +82,11 @@ if (options.key && options.cert) {
     });
 }
 
-// Middleware to handle errors
 app.use((err, req, res, next) => {
   logger.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).send(`Error: ${err}`)
 });
 
-// Middleware to handle 404 errors
 app.use((req, res, next) => {
   res.status(404).send("Sorry, we could not find that!");
 });

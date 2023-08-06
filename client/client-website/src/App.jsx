@@ -12,7 +12,7 @@ const HeroSection = () => (
           .scrollIntoView({ behavior: "smooth" })
       }
     >
-      has una reserva hoy!
+      has una reserva hoy!!
     </span>
   </section>
 );
