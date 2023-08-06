@@ -4,7 +4,7 @@ import Map from './components/Map'
 function App() {
   return (
     <main>
-      <h1>pwa</h1>
+      <h1>PWA sensors</h1>
       <Map />
     </main>
   )
