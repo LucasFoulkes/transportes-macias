@@ -1,0 +1,120 @@
+// Define your variables
+$primary-color: black !important;
+$secondary-color: #f5f5f5 !important;
+$tertiary-color: #4caf50 !important;
+$accent-color: #f5a623 !important;
+$danger-color: #d0021b !important;
+
+$danger-color: #d0021b;
+$font-family: "Nunito", sans-serif;
+
+// Global styles
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family;
+}
+
+// Root styles
+#root {
+  width: 100vw;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  // Hide scrollbar
+  &::-webkit-scrollbar,
+  & {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+// Main styles
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Calculator styles
+#calculadora {
+  background-color: $accent-color;
+  width: 100vw;
+  padding: 1rem;
+  display: grid;
+  gap: 1ch;
+
+  // Input styles
+  input {
+    padding: 1rem;
+    border: 2px solid $primary-color;
+    font-size: 1rem;
+
+    // Focus styles
+    &:focus {
+      outline: none;
+      border-bottom: none;
+    }
+
+    // Placeholder styles
+    &::placeholder {
+      color: $primary-color;
+    }
+  }
+
+  // Swap styles
+  #swap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary-color;
+    border-radius: 1rem;
+    padding: 0.5rem;
+
+    // Swap icon styles
+    #swap-icon {
+      width: fit-content;
+      color: $accent-color;
+    }
+  }
+
+  // Button styles
+  button {
+    border-radius: 1rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color-scheme: light;
+    background-color: white;
+    color: black;
+  }
+}
+
+// Hide pac-logo
+.pac-logo::after {
+  display: none;
+}
+
+// Forced colors media query
+@media (forced-colors: active) {
+  body {
+    forced-color-adjust: none;
+  }
+}
+
+// Prefers color scheme media query
+@media (prefers-color-scheme: dark) {
+  body {
+    -webkit-appearance: none;
+  }
+}

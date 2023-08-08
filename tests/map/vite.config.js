@@ -9,19 +9,14 @@ export default defineConfig({
       manifest: {
         name: "PWA",
         short_name: "PWA",
-        // backrfounr color of the icon yellow
-        background_color: "#f0db4f",
         icons: [
           {
-            src: "/logo.svg",
+            src: "/logo.png",
             sizes: "any",
-            type: "image/svg+xml",
+            type: "image/png",
             purpose: "any maskable",
           },
         ],
-      },
-      workbox: {
-        // workbox options...
       },
     }),
   ],
