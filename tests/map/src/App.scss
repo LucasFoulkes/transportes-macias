@@ -1,42 +1,52 @@
 // Define your variables
-$primary-color: black !important;
-$secondary-color: #f5f5f5 !important;
-$tertiary-color: #4caf50 !important;
-$accent-color: #f5a623 !important;
-$danger-color: #d0021b !important;
-
+$primary-color: black;
+$secondary-color: #f5f5f5;
+$tertiary-color: #4caf50;
+$accent-color: #f5a623;
 $danger-color: #d0021b;
 $font-family: "Nunito", sans-serif;
 
 // Global styles
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+html {
+  box-sizing: border-box;
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+}
+
+// Body and Root styles
 body {
   margin: 0;
   padding: 0;
   font-family: $font-family;
-}
+  overflow: -moz-scrollbars-none; // Firefox
+  -ms-overflow-style: none; // Internet Explorer 10+
+  color-scheme: light;
+  background-color: white;
+  color: black;
+  -webkit-appearance: none;
 
-// Root styles
-#root {
-  width: 100vw;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-body {
   // Hide scrollbar
   &::-webkit-scrollbar,
   & {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; // IE and Edge
+    scrollbar-width: none; // Firefox
+  }
+
+  #root {
+    width: 100vw;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
   }
 }
 
-// Main styles
+// Main layout styles
 main {
   display: flex;
   flex-direction: column;
@@ -44,7 +54,7 @@ main {
   justify-content: center;
 }
 
-// Calculator styles
+// Calculator component styles
 #calculadora {
   background-color: $accent-color;
   width: 100vw;
@@ -52,69 +62,67 @@ main {
   display: grid;
   gap: 1ch;
 
-  // Input styles
+  // Input, Swap, and Button styles
   input {
     padding: 1rem;
     border: 2px solid $primary-color;
     font-size: 1rem;
-
-    // Focus styles
+    border-radius: 0.5rem;
     &:focus {
       outline: none;
       border-bottom: none;
     }
 
-    // Placeholder styles
     &::placeholder {
       color: $primary-color;
     }
   }
 
-  // Swap styles
   #swap {
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: $primary-color;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     padding: 0.5rem;
 
-    // Swap icon styles
     #swap-icon {
       width: fit-content;
       color: $accent-color;
     }
   }
 
-  // Button styles
   button {
-    border-radius: 1rem;
+    border-radius: 0.5rem;
+    background-color: $secondary-color;
+    color: $primary-color;
+  }
+
+  .vehicle-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .vehicle-button {
+    border: 2px solid $primary-color;
+    cursor: pointer;
+  }
+
+  .vehicle-image {
+    width: 100%;
+    transition: transform 0.3s ease;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    color-scheme: light;
-    background-color: white;
-    color: black;
-  }
-}
-
-// Hide pac-logo
-.pac-logo::after {
-  display: none;
-}
-
-// Forced colors media query
+// Media query for forced colors
 @media (forced-colors: active) {
   body {
     forced-color-adjust: none;
   }
 }
 
-// Prefers color scheme media query
-@media (prefers-color-scheme: dark) {
-  body {
-    -webkit-appearance: none;
-  }
+// Additional styles
+.pac-logo::after {
+  display: none;
 }
