@@ -1,16 +1,13 @@
 const express = require("express");
 const path = require("path");
 const https = require("https");
-const http = require("http");
 const fs = require("fs");
 const morgan = require("morgan");
 const winston = require("winston");
 const cors = require("cors");
-const { restart } = require("nodemon");
 
 const app = express();
-const httpsPort = 443;
-const httpPort = 80;
+const httpsPort = process.env.HTTPS_PORT || 443;
 
 app.use(cors());
 
@@ -34,17 +31,20 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use(morgan("combined"));
 
-
-
 const distPath = path.join(__dirname, "../tests/map/dist");
 
-app.use(express.static(distPath, {
-  setHeaders: (res) => {
-    res.set('Cache-Control', 'no-store');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-  }
-}));
+app.use(
+  express.static(distPath, {
+    setHeaders: (res) => {
+      res.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate"
+      );
+      res.set("Pragma", "no-cache");
+      res.set("Expires", "0");
+    },
+  })
+);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
@@ -54,8 +54,14 @@ let options = {};
 
 try {
   options = {
-    key: fs.readFileSync("/etc/letsencrypt/live/foulkes.studio/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/foulkes.studio/fullchain.pem"),
+    key: fs.readFileSync(
+      process.env.SSL_KEY_PATH ||
+        "/etc/letsencrypt/live/foulkes.studio/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      process.env.SSL_CERT_PATH ||
+        "/etc/letsencrypt/live/foulkes.studio/fullchain.pem"
+    ),
   };
 } catch (err) {
   logger.error("Failed to load SSL certificates", err);
@@ -67,24 +73,12 @@ if (options.key && options.cert) {
   server.listen(httpsPort, "0.0.0.0", () => {
     logger.info(`Server is running on https://localhost:${httpsPort}`);
   });
-
-  http
-    .createServer((req, res) => {
-      res.writeHead(301, {
-        Location: "https://" + req.headers["host"] + req.url,
-      });
-      res.end();
-    })
-    .listen(httpPort, "0.0.0.0", () => {
-      logger.info(
-        `Redirecting all http traffic to https on https://localhost:${httpPort}`
-      );
-    });
 }
 
+// Error handling
 app.use((err, req, res, next) => {
   logger.error(err.stack);
-  res.status(500).send(`Error: ${err}`)
+  res.status(500).send(`Error: ${err}`);
 });
 
 app.use((req, res, next) => {

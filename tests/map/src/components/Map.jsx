@@ -56,8 +56,13 @@ function Map() {
       6: 30,
       7: 35,
     };
-    const costPerKm = vehicleCostMap[vehicle] || 0;
+    const costPerKm = vehicleCostMap[vehicle.id] || 0;
     const totalCost = distanceInKm * costPerKm + durationInMinutes * 0.1;
+    console.log(distanceInKm);
+    console.log(durationInMinutes);
+    console.log(vehicle);
+    console.log(vehicleCostMap[vehicle.id]);
+    console.log(totalCost);
     setCost(totalCost);
   };
 
@@ -78,25 +83,33 @@ function Map() {
       />
     );
   };
-
   return (
-    <div id="calculadora">
+    <div id={`calculadora${cost > 0 ? "-active" : ""}`}>
       <LoadScript
         googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
         libraries={libraries}
       >
         <>
-          {renderLocationInput(startLocation, setStartLocation, "Origen")}
-          {renderLocationInput(destination, setDestination, "Destino")}
-          <VehicleSelection setVehicle={setVehicle} />
-          <div id="swap" onClick={swapLocations}>
-            <VscArrowSwap id="swap-icon" size={25} />
-          </div>
-          <button onClick={calculateCost}>reservar</button>
+          {cost === 0 && (
+            <>
+              {renderLocationInput(startLocation, setStartLocation, "Origen")}
+              <div id="swap" onClick={swapLocations}>
+                <VscArrowSwap id="swap-icon" size={25} />
+              </div>
+              {renderLocationInput(destination, setDestination, "Destino")}
+              <VehicleSelection setVehicle={setVehicle} />
+              <button id="continuar" onClick={calculateCost}>
+                continuar
+              </button>
+            </>
+          )}
           {cost > 0 && (
-            <div id="cost">
-              <p>Costo: ${cost.toFixed(2)}</p>
-            </div>
+            <>
+              <h1>
+                reserva hoy por <span id="costo">${cost}</span>
+              </h1>
+              <button id="reservar">continuar</button>
+            </>
           )}
         </>
         <ToastContainer />
@@ -104,5 +117,4 @@ function Map() {
     </div>
   );
 }
-
 export default Map;

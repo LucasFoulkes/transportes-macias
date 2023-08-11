@@ -9,6 +9,7 @@ export default defineConfig({
       manifest: {
         name: "PWA",
         short_name: "PWA",
+        background_color: "#005eff",
         icons: [
           {
             src: "/logo.png",

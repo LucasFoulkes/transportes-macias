@@ -1,3 +1,4 @@
+import { useState } from "react";
 import vehicle1 from "../assets/truck_1.png";
 import vehicle2 from "../assets/truck_2.png";
 import vehicle3 from "../assets/truck_3.png";
@@ -17,8 +18,11 @@ const VehicleSelection = ({ setVehicle }) => {
     { id: 7, image: vehicle7 },
   ];
 
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+
   const handleVehicleClick = (vehicle) => {
     setVehicle(vehicle);
+    setSelectedVehicleId(vehicle.id);
   };
 
   return (
@@ -26,8 +30,10 @@ const VehicleSelection = ({ setVehicle }) => {
       {vehicles.map((vehicle) => (
         <button
           key={vehicle.id}
-          className="vehicle-button"
-          onClick={() => handleVehicleClick(vehicle.id)}
+          className={`vehicle-button ${
+            selectedVehicleId === vehicle.id ? "selected" : ""
+          }`}
+          onClick={() => handleVehicleClick(vehicle)}
         >
           <img
             src={vehicle.image}

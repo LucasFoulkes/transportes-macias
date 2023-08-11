@@ -163,3 +163,8 @@
 {"level":"info","message":"Redirecting all http traffic to https on https://localhost:80","service":"user-service"}
 {"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/luky/Projects/transportes-macias/tests/map/dist/index.html'","service":"user-service"}
 {"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/luky/Projects/transportes-macias/tests/map/dist/index.html'","service":"user-service"}
+{"level":"info","message":"Server is running on https://localhost:443","service":"user-service"}
+{"level":"info","message":"Redirecting all http traffic to https on https://localhost:80","service":"user-service"}
+{"level":"info","message":"Server is running on https://localhost:443","service":"user-service"}
+{"level":"info","message":"Redirecting all http traffic to https on https://localhost:80","service":"user-service"}
+{"level":"info","message":"Server is running on https://localhost:443","service":"user-service"}
