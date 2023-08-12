@@ -31,18 +31,27 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use(morgan("combined"));
 
-const distPath = path.join(__dirname, "../tests/map/dist");
+const distPath = path.join(__dirname, "../dev/dist");
+
+// FOR DEVELOPMENT ONLY
+// app.use(
+//   express.static(distPath, {
+//     setHeaders: (res) => {
+//       res.set(
+//         "Cache-Control",
+//         "no-store, no-cache, must-revalidate, proxy-revalidate"
+//       );
+//       res.set("Pragma", "no-cache");
+//       res.set("Expires", "0");
+//     },
+//   })
+// );
 
 app.use(
   express.static(distPath, {
-    setHeaders: (res) => {
-      res.set(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate"
-      );
-      res.set("Pragma", "no-cache");
-      res.set("Expires", "0");
-    },
+    maxAge: "1d", // Cache for 1 day
+    etag: true, // Enable ETag
+    lastModified: true, // Enable Last-Modified
   })
 );
 
