@@ -9,7 +9,7 @@ import VehicleSelection from "./VehicleSelection";
 
 const libraries = ["places"];
 
-function Map() {
+function Calculadora() {
   const currentLocation = useGeolocation();
   const [startLocation, setStartLocation] = useState({
     lat: 0,
@@ -93,9 +93,9 @@ function Map() {
           {cost === 0 && (
             <>
               {renderLocationInput(startLocation, setStartLocation, "Origen")}
-              <div id="swap" onClick={swapLocations}>
+              <button id="swap" onClick={swapLocations}>
                 <VscArrowSwap id="swap-icon" size={25} />
-              </div>
+              </button>
               {renderLocationInput(destination, setDestination, "Destino")}
               <VehicleSelection setVehicle={setVehicle} />
               <button id="continuar" onClick={calculateCost}>
@@ -117,4 +117,4 @@ function Map() {
     </div>
   );
 }
-export default Map;
+export default Calculadora;

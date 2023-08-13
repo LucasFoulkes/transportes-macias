@@ -1,10 +1,9 @@
 $primary-color: black;
 $secondary-color: white;
-$accent-color: #4caf50;
+$accent-color: #00ff84;
 $font-family: "Nunito", sans-serif;
 $border-radius: 0.5rem;
 
-// Global styles
 *,
 *::before,
 *::after {
@@ -13,23 +12,10 @@ $border-radius: 0.5rem;
 
 html,
 body {
-  box-sizing: border-box;
-  -ms-overflow-style: none; // IE and Edge
-  scrollbar-width: none; // Firefox
-  margin: 0;
   padding: 0;
   font-family: $font-family;
   color-scheme: light;
-  color: black;
-  background-image: url("./assets/0_4.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-
-  // Hide scrollbar
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  background-color: $secondary-color;
 }
 
 #root {
@@ -38,7 +24,6 @@ body {
   text-align: center;
 }
 
-// Main layout styles
 main {
   display: flex;
   flex-direction: column;
@@ -46,129 +31,199 @@ main {
   justify-content: center;
 }
 
-// Calculator component styles
-#calculadora,
-#calculadora-active {
-  margin: 1rem;
-  padding: 1rem;
-  border-radius: $border-radius;
+#calculadora {
   display: grid;
-  gap: 1ch;
-  background-color: rgba($accent-color, 0.4); // Semi-transparent background
-  backdrop-filter: blur(5px); // Standard syntax
-  -webkit-backdrop-filter: blur(5px); // Safari/WebKit prefix
+  grid-template-columns: 1fr;
+  background-color: $accent-color;
+  margin: 0 1rem;
+  padding: 1rem;
+  gap: 1rem;
+  border-radius: $border-radius;
 
-  // Fallback for browsers that don't support backdrop-filter
-  @supports not (
-    (backdrop-filter: blur(5px)) or (-webkit-backdrop-filter: blur(5px))
-  ) {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-}
-
-#calculadora-active {
-  display: flex;
-  text-transform: capitalize;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: $secondary-color;
-  background-color: rgba($secondary-color, 0.5);
   button {
-    margin: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: $accent-color;
-    color: $secondary-color;
-  }
-}
-
-// Input styles
-input {
-  padding: 1rem;
-  border: none;
-  font-size: 1rem;
-  border-radius: $border-radius;
-  &:focus {
-    outline: none;
-  }
-}
-
-// Swap styles
-#swap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba($accent-color, 0.4); // Semi-transparent background
-  border-radius: $border-radius;
-  padding: 0.5rem;
-
-  #swap-icon {
-    width: fit-content;
-    color: $secondary-color;
-  }
-}
-
-// Button styles
-button {
-  text-transform: capitalize;
-  border-radius: $border-radius;
-  background-color: $accent-color;
-  color: $secondary-color;
-  outline: none;
-  &:hover {
-    outline: none;
-  }
-}
-
-#continuar {
-  // font-size: 1.5rem;
-  // padding: 0.5rem;
-  background-color: $accent-color;
-}
-
-// Vehicle selection styles
-.vehicle-selection {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-
-  .vehicle-button {
-    border-radius: $border-radius;
     background-color: $secondary-color;
-    color: $primary-color;
-    transition: transform 0.3s ease;
+  }
 
-    &:hover,
-    &.selected {
-      transform: scale(1.1);
-      outline: none;
+  input {
+    border: none;
+    padding: 0 1rem;
+    border-radius: $border-radius;
+  }
+
+  #swap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $border-radius;
+    padding: 0.45rem;
+    background-color: $accent-color;
+    border: 2px solid rgba($secondary-color, 0.5);
+
+    #swap-icon {
+      height: max-content;
+      color: $secondary-color;
+    }
+  }
+  #vehicle-selector {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width: 100%;
+    -ms-overflow-style: none; // Internet Explorer and Edge
+    scrollbar-width: none; // Firefox
+    scroll-behavior: smooth;
+    position: relative;
+    padding: 0.5rem;
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari, and newer versions of Opera
     }
 
-    &.selected {
-      outline: 2px solid $accent-color;
-    }
-
-    .vehicle-image {
-      width: 100%;
+    .vehicle-button {
+      border: none;
+      cursor: pointer;
       transition: transform 0.3s ease;
+
+      &.selected {
+        transform: scale(1.1);
+      }
+
+      .vehicle-image {
+        height: 3rem;
+      }
     }
   }
 }
+// #calculadora,
+// #calculadora-active {
+// background-image: url("./assets/0_4.png");
+// background-repeat: no-repeat;
+// background-size: cover;
+// background-position: center;
+//   margin: 1rem;
+//   padding: 1rem;
+//   border-radius: $border-radius;
+//   display: grid;
+//   gap: 1ch;
+//   background-color: rgba($accent-color, 0.4); // Semi-transparent background
+//   backdrop-filter: blur(5px); // Standard syntax
+//   -webkit-backdrop-filter: blur(5px); // Safari/WebKit prefix
 
-#cost {
-  color: $secondary-color;
-  background-color: $primary-color;
-}
+//   // Fallback for browsers that don't support backdrop-filter
+//   @supports not (
+//     (backdrop-filter: blur(5px)) or (-webkit-backdrop-filter: blur(5px))
+//   ) {
+//     background-color: rgba(255, 255, 255, 0.5);
+//   }
+// }
 
-// Media query for forced colors
-@media (forced-colors: active) {
-  body {
-    forced-color-adjust: none;
-  }
-}
+// #calculadora-active {
+//   display: flex;
+//   text-transform: capitalize;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   font-weight: bold;
+//   color: $secondary-color;
+//   background-color: rgba($secondary-color, 0.5);
+//   button {
+//     margin: 0.5rem;
+//     padding: 0.5rem 1rem;
+//     background-color: $accent-color;
+//     color: $secondary-color;
+//   }
+// }
 
-// Additional styles
-.pac-logo::after {
-  display: none;
-}
+// // Input styles
+// input {
+//   padding: 1rem;
+//   border: none;
+//   font-size: 1rem;
+//   border-radius: $border-radius;
+//   &:focus {
+//     outline: none;
+//   }
+// }
+
+// // Swap styles
+// #swap {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: rgba($accent-color, 0.4); // Semi-transparent background
+//   border-radius: $border-radius;
+//   padding: 0.5rem;
+
+//   #swap-icon {
+//     width: fit-content;
+//     color: $secondary-color;
+//   }
+// }
+
+// // Button styles
+// button {
+//   text-transform: capitalize;
+//   border-radius: $border-radius;
+//   background-color: $accent-color;
+//   color: $secondary-color;
+//   outline: none;
+//   &:hover {
+//     outline: none;
+//   }
+// }
+
+// #continuar {
+//   // font-size: 1.5rem;
+//   // padding: 0.5rem;
+//   background-color: $accent-color;
+// }
+
+// // Vehicle selection styles
+// .vehicle-selection {
+//   display: grid;
+//   grid-template-columns: repeat(3, 1fr);
+//   gap: 10px;
+
+//   .vehicle-button {
+//     border-radius: $border-radius;
+//     background-color: $secondary-color;
+//     color: $primary-color;
+//     transition: transform 0.3s ease;
+
+//     &:hover,
+//     &.selected {
+//       transform: scale(1.1);
+//       outline: none;
+//     }
+
+//     &.selected {
+//       outline: 2px solid $accent-color;
+//     }
+
+//     .vehicle-image {
+//       width: 100%;
+//       transition: transform 0.3s ease;
+//     }
+//   }
+// }
+
+// #cost {
+//   color: $secondary-color;
+//   background-color: $primary-color;
+// }
+
+// // Media query for forced colors
+// @media (forced-colors: active) {
+//   body {
+//     forced-color-adjust: none;
+//   }
+// }
+
+// // Additional styles
+// .pac-logo::after {
+//   display: none;
+// }

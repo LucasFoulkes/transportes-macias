@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import vehicle1 from "../assets/truck_1.png";
 import vehicle2 from "../assets/truck_2.png";
 import vehicle3 from "../assets/truck_3.png";
@@ -19,14 +19,27 @@ const VehicleSelection = ({ setVehicle }) => {
   ];
 
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const selectorRef = useRef(null);
 
   const handleVehicleClick = (vehicle) => {
     setVehicle(vehicle);
     setSelectedVehicleId(vehicle.id);
   };
 
+  useEffect(() => {
+    const selectedElement = document.querySelector(".vehicle-button.selected");
+    if (selectedElement && selectorRef.current) {
+      const offset =
+        selectedElement.offsetLeft -
+        selectorRef.current.offsetWidth / 2 +
+        selectedElement.offsetWidth / 2;
+      selectorRef.current.scrollLeft = offset;
+    }
+  }, [selectedVehicleId]);
+
   return (
-    <div className="vehicle-selection">
+    <div id="vehicle-selector" ref={selectorRef}>
+      <div className="spacer"></div>
       {vehicles.map((vehicle) => (
         <button
           key={vehicle.id}
