@@ -9,6 +9,18 @@ import VehicleSelection from "./VehicleSelection";
 
 const libraries = ["places"];
 
+function MakeReservation({ cost }) {
+  return (
+    <div id="make-reservation">
+      <div id="cost">
+        <span id="cost-label">Costo:</span>
+        <span id="cost-value">{cost} USD</span>
+      </div>
+      <button id="make-reservation-button">Reservar</button>
+    </div>
+  );
+}
+
 function Calculadora() {
   const currentLocation = useGeolocation();
   const [startLocation, setStartLocation] = useState({
@@ -90,27 +102,17 @@ function Calculadora() {
         libraries={libraries}
       >
         <>
-          {cost === 0 && (
-            <>
-              {renderLocationInput(startLocation, setStartLocation, "Origen")}
-              <button id="swap" onClick={swapLocations}>
-                <VscArrowSwap id="swap-icon" size={25} />
-              </button>
-              {renderLocationInput(destination, setDestination, "Destino")}
-              <VehicleSelection setVehicle={setVehicle} />
-              <button id="continuar" onClick={calculateCost}>
-                continuar
-              </button>
-            </>
-          )}
-          {cost > 0 && (
-            <>
-              <h1>
-                reserva hoy por <span id="costo">${cost}</span>
-              </h1>
-              <button id="reservar">continuar</button>
-            </>
-          )}
+          <>
+            {renderLocationInput(startLocation, setStartLocation, "Origen")}
+            <button id="swap" onClick={swapLocations}>
+              <VscArrowSwap id="swap-icon" size={25} />
+            </button>
+            {renderLocationInput(destination, setDestination, "Destino")}
+            <VehicleSelection setVehicle={setVehicle} />
+            <button className="continuar" onClick={calculateCost}>
+              continuar
+            </button>
+          </>
         </>
         <ToastContainer />
       </LoadScript>

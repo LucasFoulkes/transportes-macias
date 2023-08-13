@@ -32,6 +32,7 @@ main {
 }
 
 #calculadora {
+  font-size: 1rem;
   display: grid;
   grid-template-columns: 1fr;
   background-color: $accent-color;
@@ -48,6 +49,11 @@ main {
     border: none;
     padding: 0 1rem;
     border-radius: $border-radius;
+    &:focus {
+      outline: none;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 
   #swap {
@@ -97,133 +103,25 @@ main {
       }
     }
   }
+  .continuar {
+    text-transform: capitalize;
+  }
 }
-// #calculadora,
-// #calculadora-active {
-// background-image: url("./assets/0_4.png");
-// background-repeat: no-repeat;
-// background-size: cover;
-// background-position: center;
-//   margin: 1rem;
-//   padding: 1rem;
-//   border-radius: $border-radius;
-//   display: grid;
-//   gap: 1ch;
-//   background-color: rgba($accent-color, 0.4); // Semi-transparent background
-//   backdrop-filter: blur(5px); // Standard syntax
-//   -webkit-backdrop-filter: blur(5px); // Safari/WebKit prefix
 
-//   // Fallback for browsers that don't support backdrop-filter
-//   @supports not (
-//     (backdrop-filter: blur(5px)) or (-webkit-backdrop-filter: blur(5px))
-//   ) {
-//     background-color: rgba(255, 255, 255, 0.5);
-//   }
-// }
+.pac-container {
+  border-bottom-right-radius: $border-radius;
+  border-bottom-left-radius: $border-radius;
+  .pac-item {
+    padding: 0 0.5rem;
+  }
+  .pac-logo {
+    display: none; // Hide the Google logo
+  }
 
-// #calculadora-active {
-//   display: flex;
-//   text-transform: capitalize;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   font-weight: bold;
-//   color: $secondary-color;
-//   background-color: rgba($secondary-color, 0.5);
-//   button {
-//     margin: 0.5rem;
-//     padding: 0.5rem 1rem;
-//     background-color: $accent-color;
-//     color: $secondary-color;
-//   }
-// }
-
-// // Input styles
-// input {
-//   padding: 1rem;
-//   border: none;
-//   font-size: 1rem;
-//   border-radius: $border-radius;
-//   &:focus {
-//     outline: none;
-//   }
-// }
-
-// // Swap styles
-// #swap {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   background-color: rgba($accent-color, 0.4); // Semi-transparent background
-//   border-radius: $border-radius;
-//   padding: 0.5rem;
-
-//   #swap-icon {
-//     width: fit-content;
-//     color: $secondary-color;
-//   }
-// }
-
-// // Button styles
-// button {
-//   text-transform: capitalize;
-//   border-radius: $border-radius;
-//   background-color: $accent-color;
-//   color: $secondary-color;
-//   outline: none;
-//   &:hover {
-//     outline: none;
-//   }
-// }
-
-// #continuar {
-//   // font-size: 1.5rem;
-//   // padding: 0.5rem;
-//   background-color: $accent-color;
-// }
-
-// // Vehicle selection styles
-// .vehicle-selection {
-//   display: grid;
-//   grid-template-columns: repeat(3, 1fr);
-//   gap: 10px;
-
-//   .vehicle-button {
-//     border-radius: $border-radius;
-//     background-color: $secondary-color;
-//     color: $primary-color;
-//     transition: transform 0.3s ease;
-
-//     &:hover,
-//     &.selected {
-//       transform: scale(1.1);
-//       outline: none;
-//     }
-
-//     &.selected {
-//       outline: 2px solid $accent-color;
-//     }
-
-//     .vehicle-image {
-//       width: 100%;
-//       transition: transform 0.3s ease;
-//     }
-//   }
-// }
-
-// #cost {
-//   color: $secondary-color;
-//   background-color: $primary-color;
-// }
-
-// // Media query for forced colors
-// @media (forced-colors: active) {
-//   body {
-//     forced-color-adjust: none;
-//   }
-// }
-
-// // Additional styles
-// .pac-logo::after {
-//   display: none;
-// }
+  .pac-icon-marker {
+    display: none; // Hide the pointer icon
+  }
+}
+.pac-container::after {
+  display: none !important; // Hide the "Powered by Google" logo
+}
