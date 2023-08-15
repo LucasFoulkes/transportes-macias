@@ -37,6 +37,7 @@ main {
   grid-template-columns: 1fr;
   background-color: $accent-color;
   margin: 0 1rem;
+  width: calc(100% - 2rem);
   padding: 1rem;
   gap: 1rem;
   border-radius: $border-radius;
@@ -57,6 +58,7 @@ main {
   }
 
   #swap {
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,6 +68,7 @@ main {
     border: 2px solid rgba($secondary-color, 0.5);
 
     #swap-icon {
+      transform: rotate(90deg);
       height: max-content;
       color: $secondary-color;
     }
@@ -106,22 +109,45 @@ main {
   .continuar {
     text-transform: capitalize;
   }
+  #make-reservation {
+    outline: none;
+    display: grid;
+    gap: 2rem;
+    padding: 0 1rem;
+    border: none;
+    button {
+      outline: none;
+      border: none;
+      word-break: break-word;
+      background-color: rgba($secondary-color, 0.5);
+      padding: 3rem 0;
+      &:focus {
+        outline: none;
+        border: none;
+        transform: scale(1.1);
+      }
+    }
+    h1 {
+      color: rgba($primary-color, 0.75);
+      text-transform: capitalize;
+      font-weight: bolder;
+      font-size: 4rem;
+      span {
+        color: $primary-color;
+        font-size: 6rem;
+      }
+    }
+  }
 }
-
 .pac-container {
   border-bottom-right-radius: $border-radius;
   border-bottom-left-radius: $border-radius;
   .pac-item {
     padding: 0 0.5rem;
   }
-  .pac-logo {
-    display: none; // Hide the Google logo
+  .pac-logo,
+  .pac-icon-marker,
+  &::after {
+    display: none;
   }
-
-  .pac-icon-marker {
-    display: none; // Hide the pointer icon
-  }
-}
-.pac-container::after {
-  display: none !important; // Hide the "Powered by Google" logo
 }

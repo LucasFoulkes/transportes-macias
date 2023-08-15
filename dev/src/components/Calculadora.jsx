@@ -12,12 +12,27 @@ const libraries = ["places"];
 function MakeReservation({ cost }) {
   return (
     <div id="make-reservation">
-      <div id="cost">
-        <span id="cost-label">Costo:</span>
-        <span id="cost-value">{cost} USD</span>
-      </div>
-      <button id="make-reservation-button">Reservar</button>
+      <button>
+        <h1>
+          reserva hoy!
+          <br />
+          <span>${cost}</span>
+        </h1>
+      </button>
     </div>
+  );
+}
+
+function ResetButton({ setStartLocation, setDestination, setCost }) {
+  const reset = () => {
+    setStartLocation({ lat: 0, lng: 0, input: "" });
+    setDestination({ lat: 0, lng: 0, input: "" });
+    setCost(0);
+  };
+  return (
+    <button id="reset" onClick={reset}>
+      Reset
+    </button>
   );
 }
 
@@ -75,7 +90,7 @@ function Calculadora() {
     console.log(vehicle);
     console.log(vehicleCostMap[vehicle.id]);
     console.log(totalCost);
-    setCost(totalCost);
+    setCost(Math.round(totalCost));
   };
 
   const swapLocations = () => {
@@ -96,27 +111,39 @@ function Calculadora() {
     );
   };
   return (
-    <div id={`calculadora${cost > 0 ? "-active" : ""}`}>
-      <LoadScript
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-        libraries={libraries}
-      >
-        <>
-          <>
-            {renderLocationInput(startLocation, setStartLocation, "Origen")}
-            <button id="swap" onClick={swapLocations}>
-              <VscArrowSwap id="swap-icon" size={25} />
-            </button>
-            {renderLocationInput(destination, setDestination, "Destino")}
-            <VehicleSelection setVehicle={setVehicle} />
-            <button className="continuar" onClick={calculateCost}>
-              continuar
-            </button>
-          </>
-        </>
+    <>
+      <div id="calculadora">
+        <LoadScript
+          googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+          libraries={libraries}
+        >
+          {cost === 0 && (
+            <>
+              {renderLocationInput(startLocation, setStartLocation, "Origen")}
+              <button id="swap" onClick={swapLocations}>
+                <VscArrowSwap id="swap-icon" />
+              </button>
+              {renderLocationInput(destination, setDestination, "Destino")}
+              <VehicleSelection setVehicle={setVehicle} />
+              <button className="continuar" onClick={calculateCost}>
+                continuar
+              </button>
+            </>
+          )}
+        </LoadScript>
+        {cost > 0 && (
+          <div>
+            <MakeReservation cost={cost} />
+            <ResetButton
+              setStartLocation={setStartLocation}
+              setDestination={setDestination}
+              setCost={setCost}
+            />
+          </div>
+        )}
         <ToastContainer />
-      </LoadScript>
-    </div>
+      </div>
+    </>
   );
 }
 export default Calculadora;

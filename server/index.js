@@ -8,9 +8,9 @@ const cors = require("cors");
 
 const app = express();
 const httpsPort = process.env.HTTPS_PORT || 443;
+const distPath = path.join(__dirname, "../dev/dist");
 
-app.use(cors());
-
+// Logger Configuration
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
@@ -29,24 +29,9 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
+// Middleware Configuration
+app.use(cors());
 app.use(morgan("combined"));
-
-const distPath = path.join(__dirname, "../dev/dist");
-
-// FOR DEVELOPMENT ONLY
-// app.use(
-//   express.static(distPath, {
-//     setHeaders: (res) => {
-//       res.set(
-//         "Cache-Control",
-//         "no-store, no-cache, must-revalidate, proxy-revalidate"
-//       );
-//       res.set("Pragma", "no-cache");
-//       res.set("Expires", "0");
-//     },
-//   })
-// );
-
 app.use(
   express.static(distPath, {
     maxAge: "1d", // Cache for 1 day
@@ -55,10 +40,12 @@ app.use(
   })
 );
 
+// Routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
+// SSL Configuration
 let options = {};
 
 try {
@@ -76,6 +63,7 @@ try {
   logger.error("Failed to load SSL certificates", err);
 }
 
+// Server Initialization
 if (options.key && options.cert) {
   const server = https.createServer(options, app);
 
@@ -84,7 +72,7 @@ if (options.key && options.cert) {
   });
 }
 
-// Error handling
+// Error Handling
 app.use((err, req, res, next) => {
   logger.error(err.stack);
   res.status(500).send(`Error: ${err}`);
