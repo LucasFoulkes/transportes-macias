@@ -1,149 +1,114 @@
-import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect } from "react";
+import GoBackButton from "./GoBackButton";
 import LocationInput from "./LocationInput";
 import { LoadScript } from "@react-google-maps/api";
 import useGeolocation from "../hooks/useGeolocation";
-import { VscArrowSwap } from "react-icons/vsc";
-import VehicleSelection from "./VehicleSelection";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
 
 const libraries = ["places"];
 
-function MakeReservation({ cost }) {
+const calculateDistance = (
+  originLocation,
+  destinationLocation,
+  setDistancia,
+  setTiempo
+) => {
+  const directionsService = new window.google.maps.DirectionsService();
+  directionsService.route(
+    {
+      origin: originLocation,
+      destination: destinationLocation,
+      travelMode: "DRIVING",
+    },
+    (result, status) => {
+      if (status === window.google.maps.DirectionsStatus.OK) {
+        const distanceValue = result.routes[0].legs[0].distance.text;
+        const durationValue = result.routes[0].legs[0].duration.text;
+        setDistancia(distanceValue); // Set the distance
+        setTiempo(durationValue); // Set the time
+      } else {
+        console.error("Error calculating distance. Please try again.");
+      }
+    }
+  );
+};
+
+export default function Calculadora() {
+  const currentLocation = useGeolocation();
+  const [originLocation, setOriginLocation] = useState(null);
+  const [destinationLocation, setDestinationLocation] = useState(null);
+  const [originInputValue, setOriginInputValue] = useState("");
+  const [destinationInputValue, setDestinationInputValue] = useState("");
+  const [Distancia, setDistancia] = useState("");
+  const [Tiempo, setTiempo] = useState("");
+
+  // Get the current date and time
+  const currentDate = new Date().toISOString().split("T")[0];
+  const currentTime = new Date().toTimeString().split(" ")[0].slice(0, 5);
+
+  const swapLocations = () => {
+    setOriginLocation(destinationLocation);
+    setDestinationLocation(originLocation);
+    setOriginInputValue(destinationInputValue);
+    setDestinationInputValue(originInputValue);
+  };
+
+  // if there is both an origin and a destination, calculate the distance once
+  useEffect(() => {
+    if (originLocation && destinationLocation) {
+      calculateDistance(
+        originLocation,
+        destinationLocation,
+        setDistancia,
+        setTiempo
+      );
+    }
+  }, [originLocation, destinationLocation]);
+
   return (
-    <div id="make-reservation">
-      <button>
-        <h1>
-          reserva hoy!
-          <br />
-          <span>${cost}</span>
-        </h1>
-      </button>
+    <div className="Calculadora">
+      <LoadScript
+        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+        libraries={libraries}
+      >
+        <GoBackButton />
+        <form action="">
+          <LocationInput
+            setLocation={setOriginLocation}
+            currentLocation={currentLocation}
+            inputValue={originInputValue}
+            setInputValue={setOriginInputValue}
+            placeholder={"origen"}
+            useMyLocation={true}
+          />
+          <button type="button" onClick={swapLocations}>
+            <FontAwesomeIcon icon={faExchangeAlt} style={{ rotate: "90deg" }} />
+          </button>
+          <LocationInput
+            setLocation={setDestinationLocation}
+            currentLocation={currentLocation}
+            inputValue={destinationInputValue}
+            setInputValue={setDestinationInputValue}
+            placeholder={"destino"}
+          />
+          <input
+            type="date"
+            name="fecha"
+            id="fecha"
+            placeholder="fecha"
+            defaultValue={currentDate}
+          />
+          <input
+            type="time"
+            name="hora"
+            id="hora"
+            placeholder="hora"
+            defaultValue={currentTime}
+          />
+          <button>continuar</button>
+        </form>
+      </LoadScript>
     </div>
   );
 }
-
-function ResetButton({ setStartLocation, setDestination, setCost }) {
-  const reset = () => {
-    setStartLocation({ lat: 0, lng: 0, input: "" });
-    setDestination({ lat: 0, lng: 0, input: "" });
-    setCost(0);
-  };
-  return (
-    <button id="reset" onClick={reset}>
-      Reset
-    </button>
-  );
-}
-
-function Calculadora() {
-  const currentLocation = useGeolocation();
-  const [startLocation, setStartLocation] = useState({
-    lat: 0,
-    lng: 0,
-    input: "",
-  });
-  const [destination, setDestination] = useState({ lat: 0, lng: 0, input: "" });
-  const [distancia, setDistancia] = useState("0 km");
-  const [duration, setDuration] = useState("0 mins");
-  const [vehicle, setVehicle] = useState(null);
-  const [cost, setCost] = useState(0);
-
-  const calculateDistance = () => {
-    const directionsService = new window.google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: startLocation,
-        destination: destination,
-        travelMode: "DRIVING",
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          const distanceValue = result.routes[0].legs[0].distance.text;
-          const durationValue = result.routes[0].legs[0].duration.text;
-          setDistancia(distanceValue);
-          setDuration(durationValue);
-        } else {
-          toast.error("Error calculating distance. Please try again.");
-        }
-      }
-    );
-  };
-
-  const calculateCost = () => {
-    calculateDistance();
-    const distanceInKm = parseFloat(distancia.split(" ")[0]);
-    const durationInMinutes = parseFloat(duration.split(" ")[0]);
-    const vehicleCostMap = {
-      1: 5,
-      2: 10,
-      3: 15,
-      4: 20,
-      5: 25,
-      6: 30,
-      7: 35,
-    };
-    const costPerKm = vehicleCostMap[vehicle.id] || 0;
-    const totalCost = distanceInKm * costPerKm + durationInMinutes * 0.1;
-    console.log(distanceInKm);
-    console.log(durationInMinutes);
-    console.log(vehicle);
-    console.log(vehicleCostMap[vehicle.id]);
-    console.log(totalCost);
-    setCost(Math.round(totalCost));
-  };
-
-  const swapLocations = () => {
-    const tempLocation = startLocation;
-    setStartLocation(destination);
-    setDestination(tempLocation);
-  };
-
-  const renderLocationInput = (location, setLocation, placeholder) => {
-    return (
-      <LocationInput
-        setLocation={setLocation}
-        currentLocation={currentLocation}
-        placeholder={placeholder}
-        inputValue={location.input}
-        setInputValue={(input) => setLocation({ ...location, input })}
-      />
-    );
-  };
-  return (
-    <>
-      <div id="calculadora">
-        <LoadScript
-          googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-          libraries={libraries}
-        >
-          {cost === 0 && (
-            <>
-              {renderLocationInput(startLocation, setStartLocation, "Origen")}
-              <button id="swap" onClick={swapLocations}>
-                <VscArrowSwap id="swap-icon" />
-              </button>
-              {renderLocationInput(destination, setDestination, "Destino")}
-              <VehicleSelection setVehicle={setVehicle} />
-              <button className="continuar" onClick={calculateCost}>
-                continuar
-              </button>
-            </>
-          )}
-        </LoadScript>
-        {cost > 0 && (
-          <div>
-            <MakeReservation cost={cost} />
-            <ResetButton
-              setStartLocation={setStartLocation}
-              setDestination={setDestination}
-              setCost={setCost}
-            />
-          </div>
-        )}
-        <ToastContainer />
-      </div>
-    </>
-  );
-}
-export default Calculadora;

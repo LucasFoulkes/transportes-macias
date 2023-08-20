@@ -16,8 +16,7 @@ export default function CreateAccountPage() {
           type="email"
           id="email"
           name="email"
-          placeholder="email"
-          required
+          placeholder="email (opcional)"
         />
         <input
           type="tel"
@@ -25,6 +24,12 @@ export default function CreateAccountPage() {
           name="phone"
           pattern="09[0-9]{8}|[0-9]{7}"
           placeholder="telefono"
+        />
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="usuario"
         />
         <input
           type="password"
