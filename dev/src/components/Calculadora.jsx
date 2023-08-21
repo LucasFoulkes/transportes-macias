@@ -1,38 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import GoBackButton from "./GoBackButton";
 import LocationInput from "./LocationInput";
 import { LoadScript } from "@react-google-maps/api";
 import useGeolocation from "../hooks/useGeolocation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
+import { useDistanceCalculation } from "../hooks/useDistanceCalculation";
 
 const libraries = ["places"];
-
-const calculateDistance = (
-  originLocation,
-  destinationLocation,
-  setDistancia,
-  setTiempo
-) => {
-  const directionsService = new window.google.maps.DirectionsService();
-  directionsService.route(
-    {
-      origin: originLocation,
-      destination: destinationLocation,
-      travelMode: "DRIVING",
-    },
-    (result, status) => {
-      if (status === window.google.maps.DirectionsStatus.OK) {
-        const distanceValue = result.routes[0].legs[0].distance.text;
-        const durationValue = result.routes[0].legs[0].duration.text;
-        setDistancia(distanceValue); // Set the distance
-        setTiempo(durationValue); // Set the time
-      } else {
-        console.error("Error calculating distance. Please try again.");
-      }
-    }
-  );
-};
 
 export default function Calculadora() {
   const currentLocation = useGeolocation();
@@ -40,10 +15,12 @@ export default function Calculadora() {
   const [destinationLocation, setDestinationLocation] = useState(null);
   const [originInputValue, setOriginInputValue] = useState("");
   const [destinationInputValue, setDestinationInputValue] = useState("");
-  const [Distancia, setDistancia] = useState("");
-  const [Tiempo, setTiempo] = useState("");
 
-  // Get the current date and time
+  const { Distancia, Tiempo } = useDistanceCalculation(
+    originLocation,
+    destinationLocation
+  );
+
   const currentDate = new Date().toISOString().split("T")[0];
   const currentTime = new Date().toTimeString().split(" ")[0].slice(0, 5);
 
@@ -54,21 +31,10 @@ export default function Calculadora() {
     setDestinationInputValue(originInputValue);
   };
 
-  // if there is both an origin and a destination, calculate the distance once
-  useEffect(() => {
-    if (originLocation && destinationLocation) {
-      calculateDistance(
-        originLocation,
-        destinationLocation,
-        setDistancia,
-        setTiempo
-      );
-    }
-  }, [originLocation, destinationLocation]);
-
   return (
     <div className="Calculadora">
       <LoadScript
+        className="map"
         googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
         libraries={libraries}
       >
@@ -79,7 +45,6 @@ export default function Calculadora() {
             currentLocation={currentLocation}
             inputValue={originInputValue}
             setInputValue={setOriginInputValue}
-            placeholder={"origen"}
             useMyLocation={true}
           />
           <button type="button" onClick={swapLocations}>
@@ -96,16 +61,19 @@ export default function Calculadora() {
             type="date"
             name="fecha"
             id="fecha"
+            style={{ width: "100%" }}
             placeholder="fecha"
             defaultValue={currentDate}
           />
           <input
+            // style={{ width: "100%", padding: "2rem !important", color: "red" }}
             type="time"
             name="hora"
             id="hora"
             placeholder="hora"
             defaultValue={currentTime}
           />
+
           <button>continuar</button>
         </form>
       </LoadScript>

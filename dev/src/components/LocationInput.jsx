@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Autocomplete } from "@react-google-maps/api";
 
 function LocationInput({
   setLocation,
@@ -9,63 +8,91 @@ function LocationInput({
   placeholder,
   useMyLocation = false,
 }) {
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [isMyLocationClicked, setIsMyLocationClicked] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [isUsingMyLocation, setIsUsingMyLocation] = useState(useMyLocation);
 
-  const onPlaceChanged = () => {
-    if (autocomplete !== null) {
-      const place = autocomplete.getPlace();
-      if (place.geometry) {
-        let location = place.geometry.location;
-        setLocation({
-          lat: location.lat(),
-          lng: location.lng(),
-          input: place.formatted_address,
-        });
-        setInputValue(place.formatted_address);
-      } else {
-        console.log("Selected place has no geometry!");
-      }
-    } else {
-      console.log("Autocomplete is not loaded yet!");
+  useEffect(() => {
+    if (isUsingMyLocation && currentLocation) {
+      setInputValue("mi ubicación");
+      setLocation(currentLocation);
+    }
+  }, [isUsingMyLocation, currentLocation, setInputValue, setLocation]);
+
+  const handleAutocomplete = async (input) => {
+    if (input && !isUsingMyLocation) {
+      const autocompleteService =
+        new window.google.maps.places.AutocompleteService();
+      autocompleteService.getPlacePredictions(
+        {
+          input,
+          locationBias: {
+            center: new window.google.maps.LatLng(
+              currentLocation.lat,
+              currentLocation.lng
+            ),
+            radius: 49999,
+          },
+        },
+        (predictions, status) => {
+          setSuggestions(
+            status === window.google.maps.places.PlacesServiceStatus.OK
+              ? predictions
+              : []
+          );
+        }
+      );
     }
   };
 
-  useEffect(() => {
-    if (useMyLocation && !isMyLocationClicked) {
-      setLocation(currentLocation);
-      setInputValue("mi ubicación");
-    }
-  }, [
-    useMyLocation,
-    isMyLocationClicked,
-    currentLocation,
-    setLocation,
-    setInputValue,
-  ]);
+  const handleSuggestionClick = (suggestion) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: suggestion.description }, (results, status) => {
+      if (status === window.google.maps.GeocoderStatus.OK) {
+        const location = results[0].geometry.location;
+        setLocation({ lat: location.lat(), lng: location.lng() });
+        setInputValue(suggestion.description);
+      }
+    });
+    setSuggestions([]);
+  };
 
   const handleInputClick = () => {
-    if (useMyLocation && !isMyLocationClicked) {
-      setInputValue(""); // Set the input value to an empty string when "My Location" is clicked
-      setIsMyLocationClicked(true);
+    if (inputValue === "mi ubicación") {
+      setInputValue(""); // Clear the input value if it's "mi ubicación"
     }
+    setIsUsingMyLocation(false);
   };
 
   return (
     <div className="location">
-      <Autocomplete
-        onLoad={setAutocomplete}
-        onPlaceChanged={onPlaceChanged}
-        id="autocomplete"
-      >
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onClick={handleInputClick}
-        />
-      </Autocomplete>
+      <input
+        type="text"
+        placeholder={isUsingMyLocation ? "mi ubicación" : placeholder}
+        value={inputValue}
+        onChange={(e) => {
+          setIsUsingMyLocation(false);
+          setInputValue(e.target.value);
+          handleAutocomplete(e.target.value);
+        }}
+        onClick={handleInputClick} // Updated onClick handler
+      />
+      {suggestions.length > 0 && (
+        <div
+          className="suggestion-dropdown"
+          style={{ border: "1px solid #ccc", position: "absolute" }}
+        >
+          {suggestions.map((suggestion) => (
+            <div
+              className="suggestion"
+              key={suggestion.place_id}
+              onClick={() => handleSuggestionClick(suggestion)}
+              style={{ padding: "5px", cursor: "pointer" }}
+            >
+              {suggestion.description}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

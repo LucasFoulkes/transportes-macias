@@ -6,18 +6,23 @@ $accent-color: #00ff84;
 $font-family: "Nunito", sans-serif;
 $border-radius: 0.5rem;
 
+// Global Styles
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: $primary-color;
+  -webkit-appearance: none; /* Optional: to remove default styling */
 }
 
 html,
 body {
   padding: 0;
   font-family: $font-family;
-  color-scheme: light;
   background-color: $secondary-color;
+  overflow: hidden; /* Prevents scrolling */
 }
 
 #root {
@@ -26,6 +31,7 @@ body {
   text-align: center;
 }
 
+// Main Layout
 main {
   background-color: white;
   display: flex;
@@ -33,10 +39,12 @@ main {
   align-items: center;
   justify-content: center;
   height: 100vh;
+
   button {
     border-radius: 0;
     background-color: $quaternary-color;
     width: 100%;
+
     &:focus {
       outline: none;
       border: none;
@@ -44,7 +52,7 @@ main {
   }
 }
 
-// Merged styles for WelcomePage, CreateAccountPage, and login
+// Page Specific Styles
 .WelcomePage,
 .CreateAccountPage,
 .Login,
@@ -58,6 +66,7 @@ main {
   height: 100vh;
   gap: 1ch;
   width: 100%;
+
   form {
     display: flex;
     flex-direction: column;
@@ -65,20 +74,25 @@ main {
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    input {
-      width: 100%;
-      text-align: center;
-      border: none;
-      padding: 0.5rem;
-      font-size: 1rem;
-      background-color: $tertiary-color;
-      &:focus {
-        outline: none;
-      }
-    }
+  }
+}
+input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #00ff84;
+  text-align: center;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: $tertiary-color;
+
+  &:focus {
+    outline: none;
   }
 }
 
+// Additional Components
 .location {
   width: 100%;
 }
@@ -86,12 +100,36 @@ main {
 .GoBackButton {
   display: flex;
   align-items: flex-start;
-  position: absolute; // Add this line to position the button absolutely within the parent
-  top: 0; // Add this line to align the button to the top of the parent
-  left: 0; // Add this line to align the button to the left of the parent
+  position: absolute;
+  top: 0;
+  left: 0;
   background-color: $primary-color;
   color: $secondary-color;
+
   &:focus {
     outline: none;
   }
+}
+
+.suggestion-dropdown {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 100%;
+  z-index: 1000;
+}
+
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+.output {
+  background-color: red;
+  padding: 1rem;
+  width: 100%;
 }
