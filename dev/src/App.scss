@@ -19,6 +19,7 @@ $border-radius: 0.5rem;
 
 html,
 body {
+  position: fixed;
   padding: 0;
   font-family: $font-family;
   background-color: $secondary-color;
@@ -58,6 +59,7 @@ main {
 .Login,
 .Calculadora,
 .MyAccount,
+.VehicleSelection,
 .Visitante {
   display: flex;
   flex-direction: column;
@@ -128,8 +130,44 @@ input {
   }
 }
 
-.output {
-  background-color: red;
-  padding: 1rem;
-  width: 100%;
+.VehicleSelection {
+  max-height: 100%;
+  overflow-y: auto;
+
+  .vehicle-list {
+    margin-bottom: 10rem;
+    margin-top: 15rem;
+    padding: 1rem;
+  }
+
+  .vehicle-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $quaternary-color;
+    padding: 0.5rem;
+
+    &.selected {
+      box-shadow: inset 0 2px 0 0 $primary-color,
+        inset 0 -2px 0 0 $primary-color; /* Inner outline color at top and bottom */
+    }
+  }
+
+  .vehicle-image {
+    background-color: $secondary-color; /* Make sure to define $secondary-color */
+    height: 6rem;
+    flex: 0 0 6rem;
+    // margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    width: 4rem;
+    margin: 0.5rem;
+  }
+
+  .vehicle-detail {
+    flex: 1;
+  }
 }

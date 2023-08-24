@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import GoBackButton from "./GoBackButton";
 import LocationInput from "./LocationInput";
 import { LoadScript } from "@react-google-maps/api";
@@ -6,10 +7,13 @@ import useGeolocation from "../hooks/useGeolocation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDistanceCalculation } from "../hooks/useDistanceCalculation";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const libraries = ["places"];
 
 export default function Calculadora() {
+  const navigate = useNavigate();
   const currentLocation = useGeolocation();
   const [originLocation, setOriginLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
@@ -29,6 +33,21 @@ export default function Calculadora() {
     setDestinationLocation(originLocation);
     setOriginInputValue(destinationInputValue);
     setDestinationInputValue(originInputValue);
+  };
+
+  const handleContinueClick = () => {
+    if (!originLocation || !destinationLocation) {
+      toast.error("Both origin and destination locations are required!");
+      return;
+    }
+    sessionStorage.setItem("originLocation", JSON.stringify(originLocation));
+    sessionStorage.setItem(
+      "destinationLocation",
+      JSON.stringify(destinationLocation)
+    );
+    sessionStorage.setItem("Distancia", Distancia); // Storing distance
+    sessionStorage.setItem("Tiempo", Tiempo); // Storing time
+    navigate("/vehicle-selection");
   };
 
   return (
@@ -61,22 +80,22 @@ export default function Calculadora() {
             type="date"
             name="fecha"
             id="fecha"
-            style={{ width: "100%" }}
             placeholder="fecha"
             defaultValue={currentDate}
           />
           <input
-            // style={{ width: "100%", padding: "2rem !important", color: "red" }}
             type="time"
             name="hora"
             id="hora"
             placeholder="hora"
             defaultValue={currentTime}
           />
-
-          <button>continuar</button>
+          <button type="button" onClick={handleContinueClick}>
+            continuar
+          </button>
         </form>
       </LoadScript>
+      <ToastContainer />
     </div>
   );
 }
