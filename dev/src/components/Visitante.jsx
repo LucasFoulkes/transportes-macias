@@ -8,7 +8,7 @@ export default function Visitante() {
   };
 
   return (
-    <div className="Visitante">
+    <div className="page-container visitante">
       <GoBackButton />
       <form action="">
         <input type="tel" name="phone" id="phone" placeholder="telefono" />

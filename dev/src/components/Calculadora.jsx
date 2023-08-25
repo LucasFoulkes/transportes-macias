@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GoBackButton from "./GoBackButton";
 import LocationInput from "./LocationInput";
@@ -15,66 +15,70 @@ const libraries = ["places"];
 export default function Calculadora() {
   const navigate = useNavigate();
   const currentLocation = useGeolocation();
-  const [originLocation, setOriginLocation] = useState(null);
-  const [destinationLocation, setDestinationLocation] = useState(null);
-  const [originInputValue, setOriginInputValue] = useState("");
-  const [destinationInputValue, setDestinationInputValue] = useState("");
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
+  const [originInput, setOriginInput] = useState("");
+  const [destinationInput, setDestinationInput] = useState("");
 
-  const { Distancia, Tiempo } = useDistanceCalculation(
-    originLocation,
-    destinationLocation
-  );
+  const { Distancia, Tiempo } = useDistanceCalculation(origin, destination);
 
+  // Get current date and time
   const currentDate = new Date().toISOString().split("T")[0];
   const currentTime = new Date().toTimeString().split(" ")[0].slice(0, 5);
 
+  // Store current date and time in session storage
+  sessionStorage.setItem("currentDate", currentDate);
+  sessionStorage.setItem("currentTime", currentTime);
+
   const swapLocations = () => {
-    setOriginLocation(destinationLocation);
-    setDestinationLocation(originLocation);
-    setOriginInputValue(destinationInputValue);
-    setDestinationInputValue(originInputValue);
+    [setOrigin, setDestination] = [setDestination, setOrigin];
+    [setOriginInput, setDestinationInput] = [
+      setDestinationInput,
+      setOriginInput,
+    ];
   };
 
-  const handleContinueClick = () => {
-    if (!originLocation || !destinationLocation) {
+  const handleContinue = () => {
+    if (!origin || !destination) {
       toast.error("Both origin and destination locations are required!");
       return;
     }
-    sessionStorage.setItem("originLocation", JSON.stringify(originLocation));
-    sessionStorage.setItem(
-      "destinationLocation",
-      JSON.stringify(destinationLocation)
-    );
-    sessionStorage.setItem("Distancia", Distancia); // Storing distance
-    sessionStorage.setItem("Tiempo", Tiempo); // Storing time
+    sessionStorage.setItem("origin", JSON.stringify(origin));
+    sessionStorage.setItem("destination", JSON.stringify(destination));
+    sessionStorage.setItem("Distancia", Distancia);
+    sessionStorage.setItem("Tiempo", Tiempo);
     navigate("/vehicle-selection");
   };
 
+  useEffect(() => {
+    sessionStorage.clear();
+  }, []);
+
   return (
-    <div className="Calculadora">
+    <div className="page-container">
       <LoadScript
-        className="map"
         googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
         libraries={libraries}
       >
         <GoBackButton />
-        <form action="">
+        <form>
           <LocationInput
-            setLocation={setOriginLocation}
+            setLocation={setOrigin}
             currentLocation={currentLocation}
-            inputValue={originInputValue}
-            setInputValue={setOriginInputValue}
+            inputValue={originInput}
+            setInputValue={setOriginInput}
             useMyLocation={true}
+            placeholder="origen"
           />
           <button type="button" onClick={swapLocations}>
             <FontAwesomeIcon icon={faExchangeAlt} style={{ rotate: "90deg" }} />
           </button>
           <LocationInput
-            setLocation={setDestinationLocation}
+            setLocation={setDestination}
             currentLocation={currentLocation}
-            inputValue={destinationInputValue}
-            setInputValue={setDestinationInputValue}
-            placeholder={"destino"}
+            inputValue={destinationInput}
+            setInputValue={setDestinationInput}
+            placeholder="destino"
           />
           <input
             type="date"
@@ -90,7 +94,7 @@ export default function Calculadora() {
             placeholder="hora"
             defaultValue={currentTime}
           />
-          <button type="button" onClick={handleContinueClick}>
+          <button type="button" onClick={handleContinue}>
             continuar
           </button>
         </form>

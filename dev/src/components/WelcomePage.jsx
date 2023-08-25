@@ -7,7 +7,7 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="WelcomePage">
+    <div className="page-container">
       <button onClick={() => handleButtonClick("/visitante")}>visitante</button>
       <button onClick={() => handleButtonClick("/crear-cuenta")}>
         crear cuenta

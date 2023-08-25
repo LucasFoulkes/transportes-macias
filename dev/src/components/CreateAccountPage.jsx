@@ -2,7 +2,7 @@ import GoBackButton from "./GoBackButton";
 
 export default function CreateAccountPage() {
   return (
-    <div className="CreateAccountPage">
+    <div className="page-container">
       <GoBackButton />
       <form>
         <input

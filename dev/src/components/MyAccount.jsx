@@ -7,7 +7,7 @@ export default function MyAccount() {
     navigate(path);
   };
   return (
-    <div className="MyAccount">
+    <div className="page-container">
       <GoBackButton />
       <button>viajes previos</button>
       <button>viajes activos</button>

@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import GoBackButton from "./GoBackButton";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-
-const queryClient = new QueryClient();
+import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 const fetchVehicles = async () => {
-  const res = await fetch("https://foulkes.studio/cars");
+  const res = await fetch("https://translogisticamacias.ec/cars");
   if (!res.ok) {
     throw new Error("Failed to fetch vehicles");
   }
@@ -20,12 +19,24 @@ export default function VehicleSelection() {
   } = useQuery("vehicles", fetchVehicles);
 
   const [selectedRow, setSelectedRow] = useState(null);
+  const navigate = useNavigate();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading vehicles</div>;
 
-  // Define the keys you want to display
   const headers = ["descripcion"];
+
+  const handleRowClick = (index) => {
+    if (selectedRow === index) {
+      sessionStorage.setItem(
+        "selectedVehicle",
+        JSON.stringify(vehicles[selectedRow])
+      );
+      navigate("/confirmar");
+    } else {
+      setSelectedRow(index);
+    }
+  };
 
   return (
     <div className="VehicleSelection">
@@ -35,11 +46,11 @@ export default function VehicleSelection() {
           <div
             key={vehicle.id}
             className={`vehicle-row ${selectedRow === index ? "selected" : ""}`}
-            onClick={() => setSelectedRow(index)}
+            onClick={() => handleRowClick(index)}
           >
             <div className="vehicle-image">
               <img
-                src={`https://foulkes.studio/images/${vehicle.imagen}`}
+                src={`https://translogisticamacias.ec/images/${vehicle.imagen}`}
                 alt={vehicle.descripcion}
               />
             </div>

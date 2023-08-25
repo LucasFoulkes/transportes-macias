@@ -2,9 +2,8 @@ $primary-color: black;
 $secondary-color: white;
 $tertiary-color: #f2f2f2;
 $quaternary-color: #bcbcbc;
-$accent-color: #00ff84;
+$accent-color: #00ff99;
 $font-family: "Nunito", sans-serif;
-$border-radius: 0.5rem;
 
 // Global Styles
 *,
@@ -17,18 +16,24 @@ $border-radius: 0.5rem;
   -webkit-appearance: none; /* Optional: to remove default styling */
 }
 
+/* Target all WebKit-specific pseudo-elements */
+::-webkit-* {
+  all: unset;
+}
+
+/* Target all WebKit-specific properties */
+*[style*="-webkit-"] {
+  all: unset;
+}
+
 html,
 body {
-  position: fixed;
-  padding: 0;
   font-family: $font-family;
   background-color: $secondary-color;
-  overflow: hidden; /* Prevents scrolling */
 }
 
 #root {
   width: 100vw;
-  margin: 0 auto;
   text-align: center;
 }
 
@@ -40,62 +45,50 @@ main {
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
 
-  button {
-    border-radius: 0;
-    background-color: $quaternary-color;
-    width: 100%;
-
-    &:focus {
-      outline: none;
-      border: none;
-    }
-  }
+button {
+  background-color: $quaternary-color;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
 }
 
 // Page Specific Styles
-.WelcomePage,
-.CreateAccountPage,
-.Login,
-.Calculadora,
-.MyAccount,
-.VehicleSelection,
-.Visitante {
+.page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  gap: 1ch;
   width: 100%;
+}
 
-  form {
+form {
+  width: 100%;
+  input {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    width: 100%;
   }
 }
+
 input {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  background-color: #00ff84;
   text-align: center;
   border: none;
   padding: 0.5rem;
   font-size: 1rem;
   background-color: $tertiary-color;
-
-  &:focus {
-    outline: none;
-  }
 }
 
 // Additional Components
-.location {
+.location,
+.GoBackButton,
+.suggestion-dropdown,
+.suggestion,
+.VehicleSelection {
   width: 100%;
 }
 
@@ -107,17 +100,12 @@ input {
   left: 0;
   background-color: $primary-color;
   color: $secondary-color;
-
-  &:focus {
-    outline: none;
-  }
 }
 
 .suggestion-dropdown {
   position: absolute;
-  background-color: #fff;
+  background-color: white;
   border: 1px solid #ccc;
-  width: 100%;
   z-index: 1000;
 }
 
@@ -135,8 +123,6 @@ input {
   overflow-y: auto;
 
   .vehicle-list {
-    margin-bottom: 10rem;
-    margin-top: 15rem;
     padding: 1rem;
   }
 
@@ -148,26 +134,25 @@ input {
 
     &.selected {
       box-shadow: inset 0 2px 0 0 $primary-color,
-        inset 0 -2px 0 0 $primary-color; /* Inner outline color at top and bottom */
+        inset 0 -2px 0 0 $primary-color;
     }
-  }
 
-  .vehicle-image {
-    background-color: $secondary-color; /* Make sure to define $secondary-color */
-    height: 6rem;
-    flex: 0 0 6rem;
-    // margin-right: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    .vehicle-image {
+      background-color: $secondary-color;
+      height: 6rem;
+      flex: 0 0 6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  img {
-    width: 4rem;
-    margin: 0.5rem;
-  }
+    img {
+      width: 4rem;
+      margin: 0.5rem;
+    }
 
-  .vehicle-detail {
-    flex: 1;
+    .vehicle-detail {
+      flex: 1;
+    }
   }
 }

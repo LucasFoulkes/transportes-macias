@@ -15,10 +15,17 @@ function LocationInput({
     if (isUsingMyLocation && currentLocation) {
       setInputValue("mi ubicación");
       setLocation(currentLocation);
+      sessionStorage.setItem(placeholder, "mi ubicación");
     }
-  }, [isUsingMyLocation, currentLocation, setInputValue, setLocation]);
+  }, [
+    isUsingMyLocation,
+    currentLocation,
+    setInputValue,
+    setLocation,
+    placeholder,
+  ]);
 
-  const handleAutocomplete = async (input) => {
+  const handleAutocomplete = (input) => {
     if (input && !isUsingMyLocation) {
       const autocompleteService =
         new window.google.maps.places.AutocompleteService();
@@ -51,16 +58,25 @@ function LocationInput({
         const location = results[0].geometry.location;
         setLocation({ lat: location.lat(), lng: location.lng() });
         setInputValue(suggestion.description);
+        sessionStorage.setItem(placeholder, suggestion.description);
       }
     });
     setSuggestions([]);
   };
 
   const handleInputClick = () => {
-    if (inputValue === "mi ubicación") {
-      setInputValue(""); // Clear the input value if it's "mi ubicación"
+    if (useMyLocation && inputValue === "mi ubicación") {
+      setInputValue("");
     }
-    setIsUsingMyLocation(false);
+  };
+
+  const handleInputBlur = () => {
+    if (useMyLocation && !inputValue) {
+      setInputValue("mi ubicación");
+      sessionStorage.setItem(placeholder, "mi ubicación");
+    } else if (inputValue && inputValue !== "mi ubicación") {
+      sessionStorage.setItem(placeholder, inputValue);
+    }
   };
 
   return (
@@ -74,7 +90,8 @@ function LocationInput({
           setInputValue(e.target.value);
           handleAutocomplete(e.target.value);
         }}
-        onClick={handleInputClick} // Updated onClick handler
+        onClick={handleInputClick}
+        onBlur={handleInputBlur}
       />
       {suggestions.length > 0 && (
         <div
